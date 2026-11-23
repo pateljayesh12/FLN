@@ -1,0 +1,1887 @@
+html_code_v11 = """<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRC CO - ક્રમિક કદમ, વાંચન ઝડપ અને પ્રગતિ ચાર્ટ (બાલવાટિકા થી ધોરણ 5)</title>
+    <style>
+        body {
+            font-family: 'Noto Sans Gujarati', Arial, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #e1f5fe 50%, #fce4ec 100%);
+            margin: 0;
+            padding: 16px;
+            color: #212121;
+        }
+        .wrapper {
+            max-width: 1280px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+        .header-bar {
+            background: #1b5e20;
+            color: #fff;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header-bar h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+        .badge {
+            background: #e8f5e9;
+            color: #1b5e20;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .section-heading {
+            font-size: 14px;
+            font-weight: bold;
+            color: #0d47a1;
+            margin: 12px 0 10px 0;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #bbdefb;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .card {
+            background: #f8f9fa;
+            border: 1px solid #cfd8dc;
+            border-radius: 12px;
+            padding: 12px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 5px;
+            color: #37474f;
+        }
+        input, select {
+            width: 100%;
+            padding: 9px;
+            border: 1px solid #90a4ae;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        .grade-pills-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+            background: #f1f8e9;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid #c5e1a5;
+        }
+        .grade-tab-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #43a047;
+            background: #ffffff;
+            color: #1b5e20;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .grade-tab-btn.active {
+            background: #1b5e20;
+            color: #ffffff;
+        }
+        .chart-info-box {
+            background: #e8f5e9;
+            border: 2px solid #66bb6a;
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .chart-info-box span.pill {
+            display: inline-block;
+            background: #1b5e20;
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-right: 8px;
+            font-size: 13px;
+        }
+        .chart-info-box span.sub-pill {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #90caf9;
+            padding: 2px 9px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-top: 6px;
+            font-size: 12px;
+        }
+        .loc-box {
+            background: #e3f2fd;
+            border: 1px solid #64b5f6;
+            color: #0d47a1;
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .mic-perm-box {
+            background: #fff3e0;
+            border: 2px solid #fb8c00;
+            color: #e65100;
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            font-size: 13.5px;
+        }
+        .mic-perm-box.mic-box-ready {
+            background: #e8f5e9;
+            border-color: #43a047;
+            color: #1b5e20;
+        }
+        .mic-perm-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-left: 6px;
+            background: #ffe0b2;
+            color: #bf360c;
+        }
+        .mic-perm-granted {
+            background: #c8e6c9;
+            color: #1b5e20;
+        }
+        .mic-perm-help {
+            margin-top: 8px;
+            font-size: 12.5px;
+            color: #4e342e;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 8px 12px;
+            border: 1px dashed #ffb74d;
+            line-height: 1.5;
+        }
+        .reading-stage {
+            background: #fffde7;
+            border: 3px dashed #fbc02d;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .stage-top-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .kram-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #1b5e20;
+        }
+        .timer-pill {
+            background: #e8eaf6;
+            color: #1a237e;
+            border: 1px solid #9fa8da;
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .sample-counter {
+            background: #e8f5e9;
+            color: #1b5e20;
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .target-display {
+            font-size: 25px;
+            font-weight: bold;
+            color: #1a237e;
+            background: #ffffff;
+            border: 1px solid #ffe082;
+            border-radius: 12px;
+            padding: 18px;
+            margin: 10px auto;
+            max-width: 96%;
+            line-height: 1.55;
+        }
+        .quick-chips {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin: 10px 0 6px 0;
+        }
+        .chip-btn {
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 16px;
+            border: 1px solid #81c784;
+            background: #f1f8e9;
+            color: #1b5e20;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .chip-btn.active-chip {
+            background: #1b5e20;
+            color: #ffffff;
+            border-color: #1b5e20;
+        }
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 9px;
+            margin-top: 12px;
+        }
+        button {
+            padding: 9px 15px;
+            border: none;
+            border-radius: 25px;
+            font-size: 13.5px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .btn-loc { background: #0277bd; color: #fff; }
+        .btn-perm { background: #e65100; color: #fff; }
+        .btn-listen { background: #2e7d32; color: #fff; }
+        .btn-mic { background: #ef6c00; color: #fff; font-size: 14.5px; padding: 10px 20px; }
+        .btn-stop { background: #ad1457; color: #fff; font-size: 14px; padding: 10px 18px; }
+        .btn-next { background: #5e35b1; color: #fff; }
+        .btn-random { background: #3949ab; color: #fff; }
+        .btn-save { background: #880e4f; color: #fff; }
+        .btn-csv { background: #00695c; color: #fff; }
+        .btn-clear { background: #c62828; color: #fff; }
+
+        .ai-verdict-banner {
+            margin: 12px auto 6px auto;
+            max-width: 96%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            border: 2px solid #cfd8dc;
+            background: #f5f5f5;
+            color: #37474f;
+        }
+        .ai-verdict-correct {
+            background: #e8f5e9;
+            border-color: #2e7d32;
+            color: #1b5e20;
+        }
+        .ai-verdict-partial {
+            background: #fff8e1;
+            border-color: #f9a825;
+            color: #e65100;
+        }
+        .ai-verdict-wrong {
+            background: #ffebee;
+            border-color: #c62828;
+            color: #b71c1c;
+        }
+
+        .word-match-detail {
+            margin: 8px auto 0 auto;
+            max-width: 96%;
+            font-size: 13px;
+            color: #37474f;
+            background: #ffffff;
+            border: 1px dashed #90a4ae;
+            border-radius: 10px;
+            padding: 8px 12px;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        .feedback-panel {
+            margin-top: 14px;
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 14px;
+            text-align: left;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 10px;
+        }
+        .fb-box {
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            line-height: 1.5;
+        }
+        .fb-accuracy { background: #e8f5e9; border-left: 4px solid #2e7d32; color: #1b5e20; }
+        .fb-speed { background: #e3f2fd; border-left: 4px solid #1565c0; color: #0d47a1; }
+        .fb-praise { background: #fff8e1; border-left: 4px solid #f9a825; color: #5d4037; }
+        .fb-remedial { background: #fbe9e7; border-left: 4px solid #d84315; color: #bf360c; }
+        .fb-motivate { background: #f3e5f5; border-left: 4px solid #7b1fa2; color: #4a148c; }
+
+        .status-line {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            min-height: 20px;
+            color: #37474f;
+        }
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 12px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        th, td {
+            border: 1px solid #cfd8dc;
+            padding: 7px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background: #263238;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <div class="header-bar">
+        <h1>📊 CRC CO - ક્રમિક કદમ, વાંચન ઝડપ અને પ્રગતિ ચાર્ટ</h1>
+        <span class="badge">બાલવાટિકા થી ધોરણ 5 • ઓટો માઇક પરમિશન & સ્માર્ટ ગુજરાતી AI વાંચન ચકાસણી</span>
+    </div>
+
+    <!-- શાળા, સ્થળ, CRC CO અને તારીખ વિગતો -->
+    <div class="section-heading">🏫 શાળા, સ્થળ, CRC CO અને તારીખની વિગતો</div>
+    <div class="grid-3">
+        <div class="card">
+            <label for="school-name">શાળાનું નામ</label>
+            <input type="text" id="school-name" placeholder="દા.ત. પ્રાથમિક શાળા - ખુંધ">
+        </div>
+        <div class="card">
+            <label for="dise-code">શાળા ડાયસ કોડ (DISE Code)</label>
+            <input type="text" id="dise-code" placeholder="દા.ત. 24010100101">
+        </div>
+        <div class="card">
+            <label for="visit-date">તારીખ</label>
+            <input type="date" id="visit-date">
+        </div>
+    </div>
+
+    <div class="grid-3">
+        <div class="card">
+            <label for="taluka-name">તાલુકો</label>
+            <input type="text" id="taluka-name" placeholder="દા.ત. તાલુકાનું નામ">
+        </div>
+        <div class="card">
+            <label for="district-name">જિલ્લો</label>
+            <input type="text" id="district-name" placeholder="દા.ત. જિલ્લાનું નામ">
+        </div>
+        <div class="card">
+            <label for="crc-co-name">CRC CO નું નામ</label>
+            <input type="text" id="crc-co-name" placeholder="દા.ત. CRC CO શ્રીનું નામ">
+        </div>
+    </div>
+
+    <!-- મુખ્ય શિક્ષક, વર્ગ શિક્ષક, બાળક અને ધોરણ મુજબ ક્રમિક કદમ પસંદગી -->
+    <div class="section-heading">👩‍🏫 મુખ્ય શિક્ષક, વર્ગ શિક્ષક, બાળક અને ધોરણ મુજબ ક્રમિક કદમ પસંદગી</div>
+    <div class="grid-3">
+        <div class="card">
+            <label for="hm-name">મુખ્ય શિક્ષકનું નામ</label>
+            <input type="text" id="hm-name" placeholder="દા.ત. મુખ્ય શિક્ષકશ્રીનું નામ">
+        </div>
+        <div class="card">
+            <label for="class-teacher">વર્ગ શિક્ષકનું નામ</label>
+            <input type="text" id="class-teacher" placeholder="દા.ત. વર્ગ શિક્ષકશ્રીનું નામ">
+        </div>
+        <div class="card">
+            <label for="student-name">બાળકનું નામ</label>
+            <input type="text" id="student-name" placeholder="દા.ત. આર્યન પટેલ">
+        </div>
+    </div>
+
+    <!-- માઇક પરમિશન ઓટો-ચાલુ અને સ્થિતિ બોક્સ -->
+    <div class="mic-perm-box" id="mic-perm-box">
+        <div>
+            🎙️ <strong>માઇક્રોફોન પરમિશન સ્થિતિ:</strong>
+            <span class="mic-perm-status" id="mic-perm-badge">ઓટોમેટિક પરમિશન શરૂ થઈ રહી છે...</span>
+        </div>
+        <div class="btn-row" style="justify-content:flex-start; margin-top:8px;">
+            <button type="button" class="btn-perm" onclick="requestMicPermission(true)">🎙️ માઇક પરમિશન ફરી ચલાવો / ટેસ્ટ કરો</button>
+            <button type="button" class="btn-loc" onclick="checkMicPermissionState(true)">🔍 પરમિશન સ્થિતિ તપાસો</button>
+        </div>
+        <div class="mic-perm-help" id="mic-perm-help">
+            <strong>ઓટોમેટિક માઇક પરમિશન વ્યવસ્થા:</strong><br>
+            1. પેજ ખુલતાની સાથે જ માઇક પરમિશન ઓટોમેટિક માંગવા/ચાલુ કરવાનો પ્રયત્ન થાય છે; જો બ્રાઉઝર પોપ-અપ પૂછે તો <strong>Allow / મંજૂરી આપો</strong> પર ક્લિક કરો.<br>
+            2. પેજ પર કોઈપણ પ્રથમ ક્લિક/ટચ થાય ત્યારે પણ જો પરમિશન બાકી હોય તો ઓટોમેટિક માઇક પરમિશન સક્રિય કરવાનો પ્રયત્ન થાય છે.<br>
+            3. બ્રાઉઝર સુરક્ષા નિયમ મુજબ જો અગાઉ <strong>Block</strong> કરેલ હોય તો એડ્રેસ બારના 🔒 આઇકન પર ક્લિક કરી <strong>Microphone → Allow</strong> કરો.
+        </div>
+    </div>
+
+    <!-- સીધું ધોરણ પસંદ કરવા માટે ઝડપી બટન -->
+    <div class="grade-pills-bar" id="grade-pills-bar">
+        <button type="button" class="grade-tab-btn active" data-grade="balvatika" onclick="selectGrade('balvatika')">બાલવાટિકા</button>
+        <button type="button" class="grade-tab-btn" data-grade="std1" onclick="selectGrade('std1')">ધોરણ 1</button>
+        <button type="button" class="grade-tab-btn" data-grade="std2" onclick="selectGrade('std2')">ધોરણ 2</button>
+        <button type="button" class="grade-tab-btn" data-grade="std3" onclick="selectGrade('std3')">ધોરણ 3</button>
+        <button type="button" class="grade-tab-btn" data-grade="std4" onclick="selectGrade('std4')">ધોરણ 4</button>
+        <button type="button" class="grade-tab-btn" data-grade="std5" onclick="selectGrade('std5')">ધોરણ 5</button>
+    </div>
+
+    <div class="grid-3">
+        <div class="card">
+            <label for="grade-select">ધોરણ પસંદ કરો (તે ધોરણ સુધીના ક્રમિક કદમ આવશે)</label>
+            <select id="grade-select" onchange="selectGrade(this.value)">
+                <option value="balvatika">બાલવાટિકા (બાલવાટિકા કદમ)</option>
+                <option value="std1">ધોરણ 1 (બાલવાટિકા + કદમ 1)</option>
+                <option value="std2">ધોરણ 2 (બાલવાટિકા + કદમ 1 થી 3)</option>
+                <option value="std3">ધોરણ 3 (બાલવાટિકા + કદમ 1 થી 6)</option>
+                <option value="std4">ધોરણ 4 (બાલવાટિકા + કદમ 1 થી 9, 11)</option>
+                <option value="std5">ધોરણ 5 (બાલવાટિકા + કદમ 1 થી 11 સંપૂર્ણ)</option>
+            </select>
+        </div>
+        <div class="card">
+            <label for="kadam-select">ક્રમિક કદમ પસંદ કરો (પાયાના થી આગળના કદમ)</label>
+            <select id="kadam-select" onchange="onKadamChange()"></select>
+        </div>
+        <div class="card">
+            <label for="kram-select">ક્રમ નંબર અને અધ્યયન નિષ્પત્તિ પસંદ કરો</label>
+            <select id="kram-select" onchange="onKramChange()"></select>
+        </div>
+    </div>
+
+    <div class="chart-info-box" id="kadam-banner"></div>
+
+    <div class="loc-box" id="location-box">
+        📍 <strong>વિઝિટ સ્થળ:</strong> GPS લોકેશન મેળવવા માટે બટન દબાવો.
+        <div class="btn-row" style="justify-content:flex-start; margin-top:6px;">
+            <button class="btn-loc" onclick="fetchLocation()">📍 વર્તમાન GPS સ્થળ મેળવો</button>
+        </div>
+    </div>
+
+    <div class="reading-stage">
+        <div class="stage-top-meta">
+            <div class="kram-title" id="active-kram-label">ક્રમ 1: આકાર, રંગ અને અવાજ ઓળખ</div>
+            <div class="timer-pill" id="live-timer">⏱️ સમય: 0.0 સે. | ઝડપ: 0 શબ્દ/મિનિટ</div>
+            <div class="sample-counter" id="sample-counter">ઉદાહરણ 1 / 15</div>
+        </div>
+
+        <div class="target-display" id="target-text">🔵 ગોળ   🔺 ત્રિકોણ   🟦 ચોરસ   ⭐ તારો</div>
+        <div class="quick-chips" id="quick-chips"></div>
+
+        <div class="ai-verdict-banner" id="ai-verdict-banner">
+            🤖 AI સ્વયંચાલિત મૂલ્યાંકન: બાળક વાંચે ત્યારે AI ગુજરાતી ઉચ્ચાર, શબ્દ અને અક્ષરો તપાસીને આપમેળે <strong>સાચું</strong> કે <strong>ખોટું</strong> નક્કી કરશે.
+        </div>
+
+        <div class="btn-row">
+            <button class="btn-listen" onclick="speakTarget()">🔊 AI સંભળાવે</button>
+            <button class="btn-mic" id="mic-btn" onclick="listenStudent()">🎤 બાળક વાંચે (AI ઓટો ચેક)</button>
+            <button class="btn-stop" id="stop-btn" onclick="stopListeningAndEvaluate()">⏹️ વાંચન પૂર્ણ (AI ચેક કરો)</button>
+            <button class="btn-next" onclick="nextSample()">➡️ આગળનું ઉદાહરણ</button>
+            <button class="btn-random" onclick="randomSample()">🎲 રેન્ડમ ઉદાહરણ</button>
+            <button class="btn-save" onclick="saveRecord()">💾 પ્રગતિ રેકોર્ડ સાચવો</button>
+        </div>
+
+        <div class="status-line" id="spoken-out"></div>
+        <div class="word-match-detail" id="word-match-detail" style="display:none;"></div>
+
+        <div class="feedback-panel" id="feedback-panel">
+            <div class="fb-box fb-accuracy" id="fb-accuracy"><strong>🤖 AI નિર્ણય (સાચું / ખોટું):</strong> બાળક વાંચે ત્યારે AI આપમેળે નક્કી કરશે.</div>
+            <div class="fb-box fb-speed" id="fb-speed"><strong>⚡ વાંચન ઝડપ:</strong> વાંચન પૂર્ણ થતાં સમય (સેકન્ડ) અને શબ્દ/મિનિટ (WPM) આપમેળે નોંધાશે.</div>
+            <div class="fb-box fb-praise" id="fb-praise"><strong>🌟 પ્રશંસા:</strong> AI દ્વારા ઓટો પ્રશંસા વાક્ય અહીં આવશે.</div>
+            <div class="fb-box fb-remedial" id="fb-remedial"><strong>🛠️ સુધારાત્મક બાબત:</strong> AI દ્વારા ઓટો સુધારાત્મક બાબત અહીં આવશે.</div>
+            <div class="fb-box fb-motivate" id="fb-motivate"><strong>💪 પ્રેરણા:</strong> AI દ્વારા ઓટો પ્રેરણાદાયી વાક્ય અહીં આવશે.</div>
+        </div>
+    </div>
+
+    <div class="btn-row" style="justify-content:space-between; align-items:center;">
+        <strong>📋 નોંધાયેલ પ્રગતિ રેકોર્ડ્સ (<span id="rec-count">0</span>)</strong>
+        <div>
+            <button class="btn-csv" onclick="exportCSV()">⬇️ Excel / CSV ડાઉનલોડ (અલગ કોલમ)</button>
+            <button class="btn-clear" onclick="clearRecords()">🗑️ બધું સાફ કરો</button>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>તારીખ</th>
+                    <th>ધોરણ</th>
+                    <th>શાળા / ડાયસ</th>
+                    <th>તાલુકો / જિલ્લો</th>
+                    <th>CRC CO</th>
+                    <th>મુ.શિ. / વ.શિ.</th>
+                    <th>બાળક</th>
+                    <th>કદમ / ક્રમ</th>
+                    <th>AI નિર્ણય (સાચું/ખોટું)</th>
+                    <th>વાંચન ઝડપ</th>
+                    <th>પ્રશંસા</th>
+                    <th>સુધારાત્મક બાબત</th>
+                    <th>પ્રેરણા</th>
+                    <th>GPS સ્થળ</th>
+                </tr>
+            </thead>
+            <tbody id="log-tbody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const allKadamsOrdered = [
+        {
+            id: "kadam_balvatika",
+            minGradeRank: 0,
+            originLabel: "બાલવાટિકા કદમ",
+            name: "બાલવાટિકા કદમ — પૂર્વ વાંચન કૌશલ્ય અને પાયાના અક્ષરો",
+            letters: "આકાર, રંગ, અવાજ, ડાબેથી જમણે ગતિ અને પાયાના અક્ષરો",
+            krams: [
+                {
+                    no: 1,
+                    title: "આકાર, રંગ અને અવાજ ઓળખ (બાલવાટિકા)",
+                    samples: [
+                        "🔵 ગોળ   🔺 ત્રિકોણ   🟦 ચોરસ   ⭐ તારો",
+                        "🔴 લાલ   🟡 પીળો   🟢 લીલો   🔵 વાદળી",
+                        "🐶 કૂતરો (ભૌ ભૌ)   🐱 બિલાડી (મ્યાઉં)   🐮 ગાય (ભાંભરવું)",
+                        "🐦 ચકલી (ચીં ચીં)   🦆 બતક (ક્વેક)   🐸 દેડકો (ડ્રાઉં)",
+                        "🍎 સફરજન   🍌 કેળું   🥭 કેરી   🍊 નારંગી",
+                        "☀️ સૂર્ય   🌙 ચાંદો   ☁️ વાદળ   🌧️ વરસાદ",
+                        "👁️ આંખ   👂 કાન   👃 નાક   ✋ હાથ",
+                        "🚗 કાર   🚌 બસ   🚂 ટ્રેન   🚲 સાયકલ",
+                        "ડાબેથી જમણે આંગળી ફેરવી બતાવો: ⬅️ ➡️",
+                        "ઉપરથી નીચે અને ડાબેથી જમણે રેખા દોરી બતાવો.",
+                        "🦁 સિંહ (ગર્જના)   🐘 હાથી   🐎 ઘોડો   🐐 બકરી",
+                        "🌸 ફૂલ   🍃 પાંદડું   🪨 પથ્થર   💧 પાણી",
+                        "🟠 નારંગી   🟣 જાંબલી   ⚪ સફેદ   ⚫ કાળો",
+                        "🐝 મધમાખી (ગણગણાટ)   🐓 કૂકડો (કૂકડેકૂ)   🦉 ઘુવડ",
+                        "🥄 ચમચી   🥣 વાટકી   🥛 પ્યાલો   🪑 ખુરશી"
+                    ]
+                },
+                {
+                    no: 2,
+                    title: "પાયાના મૂળાક્ષરો અને સરળ શબ્દ ઓળખ (બાલવાટિકા)",
+                    samples: [
+                        "અ   આ   ક   ગ   મ   ન",
+                        "બ   પ   ત   દ   સ   ર",
+                        "કમળ   ઘર   બસ   નળ   જગ   ફળ",
+                        "માતા   દાદા   કાકા   નાના   બાળક",
+                        "અનાર   આમ   ઈંટ   ઉન",
+                        "ગ   મ   ન   જ   વ   ર",
+                        "ક   બ   પ   ત   દ   સ",
+                        "પાણી   માછલી   પક્ષી   ઝાડ",
+                        "ચિત્ર જોઈ તેનો પહેલો અક્ષર બોલો: 🌳 (ઝાડ -> ઝ), 🏠 (ઘર -> ઘ)",
+                        "ચિત્ર જોઈ તેનો પહેલો અક્ષર બોલો: 🐟 (માછલી -> મ), ☀️ (સૂર્ય -> સુ)",
+                        "ચિત્ર જોઈ તેનો પહેલો અક્ષર બોલો: 🍌 (કેળું -> કે), 🍎 (સફરજન -> સ)",
+                        "સરળ શબ્દો વાંચો: જળ, ફળ, ઘર, બસ, મન, વન",
+                        "ચિત્ર જોઈ તેનો પહેલો અક્ષર બોલો: 🚗 (કાર -> કા), 🐶 (કૂતરો -> કૂ)",
+                        "સરળ શબ્દો વાંચો: દિન, રસ, તન, ધન, ખગ",
+                        "પાયાના અક્ષરો ઓળખો: અ, આ, ઇ, ક, ગ, મ"
+                    ]
+                },
+                {
+                    no: 3,
+                    title: "ચિત્ર વાંચન, મોખિક અભિવ્યક્તિ અને પૂર્વ લેખન (બાલવાટિકા)",
+                    samples: [
+                        "બાળકને પોતાના નામ, ઉંમર અને ગામ વિશે બોલવા કહો.",
+                        "ચિત્ર/વસ્તુ જોઈ 1 સરળ શબ્દ કે વાક્ય બોલવા કહો (દા.ત. આ મારી બસ છે).",
+                        "ટપકાં જોડી ઊભી અને આડી લીટી દોરવા કહો.",
+                        "ગોળ અને અર્ધગોળ આકાર દોરી બતાવવા કહો.",
+                        "પોતાના મનપસંદ રંગ અથવા ફળનું નામ બોલવા કહો.",
+                        "બાલવાટિકાના 3 સરળ શબ્દો બોલી બતાવવા કહો.",
+                        "સવારે ઊઠીને શું કરીએ છીએ તે 1 વાક્યમાં કહો.",
+                        "પરિવારના સભ્યોના નામ બોલી બતાવવા કહો.",
+                        "પોતાના રમકડા વિશે 1 વાક્ય બોલવા કહો.",
+                        "પાયાના અક્ષરો 'ક, ગ, મ, ન' લખવાનો પ્રયત્ન કરાવો.",
+                        "વાર્તા કે જોડકણાની 2 લીટી સંભળાવવા કહો.",
+                        "આપણી શાળા વિશે 1 સરળ વાક્ય બોલવા કહો.",
+                        "પોતાના મિત્રનું નામ બોલી તેના વિશે 1 શબ્દ કે વાક્ય બોલવા કહો.",
+                        "વરસાદ આવે ત્યારે શું થાય છે તે 1 વાક્યમાં કહો.",
+                        "ચિત્ર જોઈ તેમાં કયા રંગો છે તે બોલી બતાવવા કહો."
+                    ]
+                }
+            ]
+        },
+        {
+            id: "kadam_1",
+            minGradeRank: 1,
+            originLabel: "ધોરણ 1 (કદમ 1)",
+            name: "કદમ 1 — ગ, મ, ન, જ, 'ા', વ, ર, સ, દ, 'ે'",
+            letters: "ગ, મ, ન, જ, 'ા', વ, ર, સ, દ, 'ે'",
+            krams: [
+                {
+                    no: 4,
+                    title: "મૂળાક્ષરોની ઓળખ (કદમ 1)",
+                    samples: [
+                        "ગ   મ   ન   જ   ા   વ   ર   સ   દ   ે",
+                        "વ   ર   સ   દ   ે   ગ   મ   ન   જ   ા",
+                        "ન   જ   વ   દ   ગ   મ   ર   સ   ા   ે",
+                        "સ   દ   ગ   મ   ન   જ   વ   ર   ા   ે",
+                        "ે   ા   દ   સ   ર   વ   જ   ન   મ   ગ",
+                        "મ   ન   જ   ગ   ા   ર   સ   દ   વ   ે",
+                        "જ   વ   ર   સ   દ   ગ   મ   ન   ા   ે",
+                        "દ   સ   ર   વ   જ   ન   મ   ગ   ે   ા",
+                        "ર   વ   જ   ન   મ   ગ   સ   દ   ા   ે",
+                        "ા   ે   ગ   વ   ન   ર   જ   સ   મ   દ",
+                        "ગા   મા   ના   જા   વા   રા   સા   દા",
+                        "ગે   મે   ને   જે   વે   રે   સે   દે",
+                        "ગ   જ   વ   સ   ા   ે   મ   ન   ર   દ",
+                        "મ   ર   દ   ે   ા   ગ   ન   જ   વ   સ",
+                        "સ   ે   ા   ર   વ   જ   ન   મ   ગ   દ"
+                    ]
+                },
+                {
+                    no: 5,
+                    title: "મૂળાક્ષરો અને માત્રાનું લેખન (કદમ 1)",
+                    samples: [
+                        "ગ, મ, ન, જ, ા (ક્રમશઃ લખાવો)",
+                        "વ, ર, સ, દ, ે (ક્રમશઃ લખાવો)",
+                        "ગા, મા, ના, જા, વા, રા, સા, દા (કાનાવાળા અક્ષરો લખાવો)",
+                        "ગે, મે, ને, જે, વે, રે, સે, દે (એકમાત્રાવાળા અક્ષરો લખાવો)",
+                        "ગમ, મન, જગ, ગામ, નામ (લેખન ચકાસો)",
+                        "વર, સર, દસ, વેર, દેવ (લેખન ચકાસો)",
+                        "વરસાદ, સવાર, રમત, દેવ (લેખન ચકાસો)",
+                        "ગગન, મનન, જનક, નામ (લેખન ચકાસો)",
+                        "ગ, ગા, ગે (માત્રા તફાવત સાથે લખાવો)",
+                        "સ, સા, સે અને દ, દા, દે (લેખન ચકાસો)",
+                        "જ, જા, જે અને ર, રા, રે (લેખન ચકાસો)",
+                        "વ, વા, વે અને મ, મા, મે (લેખન ચકાસો)",
+                        "ન, ના, ને (માત્રા તફાવત સાથે લખાવો)",
+                        "જામ, ગાન, મેઘ, વેદ (લેખન ચકાસો)",
+                        "રસ, મદ, જન, વન (લેખન ચકાસો)"
+                    ]
+                },
+                {
+                    no: 6,
+                    title: "સરળ શબ્દો અને વાક્યોનું વાંચન (કદમ 1)",
+                    samples: [
+                        "ગામ, નામ, જામ, ગાન, વરસાદ, સવાર",
+                        "દેવ, વેદ, રમત, સેવ, મગન, ગગન",
+                        "ગગન ગામ જાય છે. મનન નમન કરે છે.",
+                        "સવારે વરસાદ વરસે છે. દેવ રમત રમે છે.",
+                        "જનક જામ લાવે છે. વેદ સરસ વાંચે છે.",
+                        "રમેશ સવારે જાગે છે. ગામ સુંદર છે.",
+                        "નામ લખ, ગાન ગા, જાગ.",
+                        "વરસાદ આવે, સવાર થાય.",
+                        "દેવ અને વેદ ગામ જાય છે.",
+                        "મગન રસ પીએ છે.",
+                        "ગગન અને મનન રમે છે.",
+                        "સવાર થઈ, ગામ જાગ્યું.",
+                        "વેદ ગાન ગાય છે. જનક રમે છે.",
+                        "મનન ગામ જાય છે. દેવ જાગે છે.",
+                        "સવારે રમત રમે છે. વરસાદ આવે છે."
+                    ]
+                },
+                {
+                    no: 7,
+                    title: "શબ્દ લેખન, શ્રુતલેખન અને સ્વતંત્ર લેખન (કદમ 1)",
+                    samples: [
+                        "શ્રુતલેખન: ગામ, નામ, વરસાદ, સવાર, દેવ.",
+                        "શ્રુતલેખન: મગન, ગગન, મનન, જનક, રમેશ.",
+                        "શ્રુતલેખન: રમત, વેદ, સેવ, જામ, ગાન.",
+                        "બાળકને કદમ 1 ના કોઈપણ 3 શબ્દો જાતે લખવા કહો.",
+                        "પોતાનું નામ અને ગામનું નામ જાતે લખાવો.",
+                        "'વરસાદ' અને 'સવાર' શબ્દો જાતે લખાવો.",
+                        "'દેવ' અને 'રમત' શબ્દો જાતે લખાવો.",
+                        "'ગામ' અને 'નામ' શબ્દો જાતે લખાવો.",
+                        "કદમ 1 ના 'ા' માત્રાવાળા 3 શબ્દો જાતે લખાવો.",
+                        "કદમ 1 ના 'ે' માત્રાવાળા 3 શબ્દો જાતે લખાવો.",
+                        "શ્રુતલેખન: ગગન ગામ જા. મનન નમન કર.",
+                        "કદમ 1 ના કોઈપણ 5 શબ્દો જાતે લખી બતાવવા કહો.",
+                        "શ્રુતલેખન: સવાર, વેદ, રમત, નામ, ગામ.",
+                        "'મગન' અને 'ગગન' શબ્દો જાતે લખાવો.",
+                        "'જનક' અને 'વેદ' શબ્દો જાતે લખાવો."
+                    ]
+                }
+            ]
+        },
+        {
+            id: "kadam_2",
+            minGradeRank: 2,
+            originLabel: "ધોરણ 2 (કદમ 2)",
+            name: "કદમ 2 — ક, બ, અ, છ, એ, આ તથા પ, ડ, ત, ણ, ઇ, ઈ",
+            letters: "ક, બ, અ, છ, એ, આ  |  પ, ડ, ત, ણ, ઇ, ઈ",
+            krams: [
+                {
+                    no: 14,
+                    title: "મૂળાક્ષરોની ઓળખ અને લેખન (કદમ 2 • ક, બ, અ, છ, એ, આ)",
+                    samples: [
+                        "ક   બ   અ   છ   એ   આ",
+                        "અ   આ   એ   ક   બ   છ",
+                        "છ   ક   એ   બ   આ   અ",
+                        "બ   છ   આ   અ   ક   એ",
+                        "લેખન ચકાસો: ક, બ, અ, છ, એ, આ",
+                        "કાનાવાળા અક્ષરો લખાવો: કા, બા, છા, આ",
+                        "એકમાત્રાવાળા અક્ષરો લખાવો: કે, બે, છે, એ",
+                        "શબ્દ લેખન ચકાસો: કબ, આજ, એક, છાબ",
+                        "શબ્દ લેખન ચકાસો: બસ, આગ, અજગર",
+                        "શબ્દ લેખન ચકાસો: કાકા, બાજ, છાબડી",
+                        "શબ્દ લેખન ચકાસો: કબાટ, બકરી, અનાજ",
+                        "સ્વર અને વ્યંજન ઓળખાવો: અ, આ, એ | ક, બ, છ",
+                        "ક   એ   આ   બ   છ   અ",
+                        "આ   છ   ક   એ   અ   બ",
+                        "શબ્દ લેખન ચકાસો: છાસ, બળદ, આંખ"
+                    ]
+                },
+                {
+                    no: 16,
+                    title: "શબ્દો, વાક્યોનું વાંચન, શ્રુતલેખન અને સ્વતંત્ર લેખન (કદમ 2)",
+                    samples: [
+                        "કાકા, બસ, અજગર, છાબ, એક, આગ",
+                        "કબ, બાજ, બકરી, અનાજ, કબાટ",
+                        "કાકા બસમાં આવે છે.",
+                        "આ એક અજગર છે.",
+                        "બસમાં કાકા બેસે છે.",
+                        "બકરી અનાજ ખાય છે.",
+                        "કબાટમાં ચોપડી છે.",
+                        "છાબમાં ફળ છે.",
+                        "શ્રુતલેખન: કાકા, બકરી, અનાજ, એક.",
+                        "શ્રુતલેખન: બસ, અજગર, કાકા બસમાં આવે છે.",
+                        "બાળકને 'બસ' અથવા 'કાકા' પરથી એક વાક્ય જાતે લખવા કહો.",
+                        "બાળકને 'બકરી' અથવા 'કબાટ' પરથી એક વાક્ય જાતે લખવા કહો.",
+                        "આગ લાગી, બસ આવી.",
+                        "શ્રુતલેખન: છાબ, આગ, કબાટ, બકરી અનાજ ખાય છે.",
+                        "'અજગર' અથવા 'છાબ' પરથી એક વાક્ય જાતે લખાવો."
+                    ]
+                },
+                {
+                    no: 19,
+                    title: "મૂળાક્ષરોની ઓળખ, લેખન અને વાંચન (કદમ 2 • પ, ડ, ત, ણ, ઇ, ઈ)",
+                    samples: [
+                        "પ   ડ   ત   ણ   ઇ   ઈ",
+                        "ત   ણ   પ   ડ   ઈ   ઇ",
+                        "ડ   પ   ઈ   ત   ઇ   ણ",
+                        "પાણી, તળાવ, પતંગ, ઈંટ, ઇનામ",
+                        "પગ, ડગ, તાવ, દીવાલ, પરી, તીર",
+                        "તળાવમાં પાણી છે.",
+                        "દીપક પતંગ ચગાવે છે.",
+                        "પરીને ઇનામ મળે છે.",
+                        "દીવાલ પર ઈંટ છે.",
+                        "શ્રુતલેખન: પાણી, પતંગ, ઇનામ, દીવાલ.",
+                        "શ્રુતલેખન: તળાવ, ઈંટ, તળાવમાં પાણી છે.",
+                        "'પાણી' અથવા 'પતંગ' શબ્દ પરથી એક વાક્ય જાતે લખાવો.",
+                        "ઈ   ઇ   ણ   ત   ડ   પ",
+                        "દીપક તળાવ પાસે જાય છે.",
+                        "'તળાવ' અથવા 'ઇનામ' શબ્દ પરથી એક વાક્ય જાતે લખાવો."
+                    ]
+                }
+            ]
+        },
+        {
+            id: "kadam_3",
+            minGradeRank: 2,
+            originLabel: "ધોરણ 2 (કદમ 3)",
+            name: "કદમ 3 — લ, ટ, ચ, ખ, 'ૈ', ઝ, હ, ઘ, ળ, ઉ, ઊ",
+            letters: "લ, ટ, ચ, ખ, 'ૈ'  |  ઝ, હ, ઘ, ળ, ઉ, ઊ",
+            krams: [
+                {
+                    no: 24,
+                    title: "મૂળાક્ષરો અને 'ૈ' માત્રા ઓળખ, વાંચન અને લેખન (કદમ 3)",
+                    samples: [
+                        "લ   ટ   ચ   ખ   ૈ",
+                        "ચ   ખ   લ   ટ   ૈ",
+                        "લૈ   ટૈ   ચૈ   ખૈ",
+                        "ચૈતર, પૈસા, ખેતર, ટપાલી, ચકલી",
+                        "લખોટી, ખજૂર, ટોપલી, ચૈતન્ય, મૈત્રી",
+                        "ખેડૂત ખેતરમાં જાય છે. ચકલી દાણા ચણે છે.",
+                        "ટપાલી ટપાલ લાવે છે. ચૈતરમાં ગરમી વધે છે.",
+                        "ચૈતન્ય પૈસા ગણે છે. ટોપલીમાં ફળ છે.",
+                        "શ્રુતલેખન: પૈસા, ખેતર, ટપાલી, ચૈતર.",
+                        "શ્રુતલેખન: ચકલી, ખજૂર, ચકલી દાણા ચણે છે.",
+                        "ખેતર અથવા ટપાલી વિશે એક વાક્ય જાતે લખાવો.",
+                        "'પૈસા' અથવા 'ચકલી' વિશે એક વાક્ય જાતે લખાવો.",
+                        "ખૈ   ચૈ   લૈ   ટૈ   લ   ટ",
+                        "મૈત્રી ખજૂર ખાય છે.",
+                        "'ખજૂર' અથવા 'ટોપલી' વિશે એક વાક્ય જાતે લખાવો."
+                    ]
+                },
+                {
+                    no: 29,
+                    title: "મૂળાક્ષરો, 'ઉ' અને 'ઊ' માત્રા ઓળખ, વાંચન અને લેખન (કદમ 3)",
+                    samples: [
+                        "ઝ   હ   ઘ   ળ   ઉ   ઊ",
+                        "ઘ   ળ   ઝ   હ   ઉ   ઊ",
+                        "ઝુ, હુ, ઘુ, ળુ  |  ઝૂ, હૂ, ઘૂ",
+                        "ઝાડ, ઘડિયાળ, હળદર, ઉંદર, ઊંટ",
+                        "ઘર, હરણ, ઝરણું, ઊન, ઉજાસ",
+                        "ઝાડ નીચે ઊંટ બેઠો છે. ઘરમાં ઘડિયાળ છે.",
+                        "ઉંદર ઝડપથી દોડે છે. હરણ જંગલમાં ફરે છે.",
+                        "ઝરણામાંથી ચોખ્ખું પાણી વહે છે.",
+                        "શ્રુતલેખન: ઝાડ, ઘડિયાળ, ઉંદર, ઊંટ.",
+                        "શ્રુતલેખન: ઘર, હળદર, ઘરમાં ઘડિયાળ છે.",
+                        "ઝાડ અથવા ઘર વિશે એક વાક્ય જાતે લખાવો.",
+                        "'ઊંટ' અથવા 'ઘડિયાળ' વિશે એક વાક્ય જાતે લખાવો.",
+                        "ઉ   ઊ   ળ   ઘ   હ   ઝ",
+                        "હળદર પીળી હોય છે. ઊનમાંથી સ્વેટર બને છે.",
+                        "'ઉંદર' અથવા 'ઝરણું' વિશે એક વાક્ય જાતે લખાવો."
+                    ]
+                }
+            ]
+        },
+        {
+            id: "kadam_4",
+            minGradeRank: 3,
+            originLabel: "ધોરણ 3 (કદમ 4)",
+            name: "કદમ 4 — ભ, ય, ધ, ફ, 'ૌ', ઢ, ઠ, શ, થ, 'ં'",
+            letters: "ભ, ય, ધ, ફ, 'ૌ'  |  ઢ, ઠ, શ, થ, 'ં'",
+            krams: [
+                {
+                    no: 34,
+                    title: "'ૌ' માત્રા ઓળખ, વાંચન, શ્રુતલેખન અને લેખન (કદમ 4)",
+                    samples: [
+                        "ભ   ય   ધ   ફ   ૌ",
+                        "ભૌ   યૌ   ધૌ   ફૌ",
+                        "ગૌરવ, ભમરડો, ધજા, ફાનસ, યજ્ઞ",
+                        "ગૌશાળા, ફૂલદાની, ધ્યાન, ભગવાન, યંત્ર",
+                        "ગૌરવ ભમરડો ફેરવે છે. મંદિર પર ધજા ફરકે છે.",
+                        "ગૌશાળામાં ગાયો છે. ફાનસમાં અજવાળું છે.",
+                        "ફૂલદાનીમાં સુંદર ફૂલ છે. ધ્યાનથી અભ્યાસ કરો.",
+                        "શ્રુતલેખન: ગૌરવ, ભમરડો, ફાનસ, ધજા.",
+                        "શ્રુતલેખન: ગૌશાળા, યજ્ઞ, ગૌરવ ભમરડો ફેરવે છે.",
+                        "'ગૌરવ' અથવા 'ભમરડો' વિશે એક વાક્ય જાતે લખાવો.",
+                        "'ધજા' અથવા 'ફાનસ' પરથી 1 વાક્ય જાતે લખાવો.",
+                        "કોઈપણ 2 વાક્યો જાતે લખાવો.",
+                        "ફૌ   ધૌ   યૌ   ભૌ   ધ   ફ",
+                        "સૌરભ ગૌશાળામાં જાય છે.",
+                        "'ગૌશાળા' અથવા 'ફૂલદાની' વિશે 1 વાક્ય જાતે લખાવો."
+                    ]
+                },
+                {
+                    no: 39,
+                    title: "અનુસ્વાર ('ં') વાંચન, શ્રુતલેખન, લેખન અને અર્થગ્રહણ (કદમ 4)",
+                    samples: [
+                        "ઢ   ઠ   શ   થ   ં",
+                        "શં   થં   પં   ઠં   ઢં",
+                        "શંખ, ઢોલક, ઠંડી, થાળી, જંગલ",
+                        "પતંગ, બંદર, થાંભલો, શહેર, ઢાંકણ",
+                        "શિયાળામાં ખૂબ ઠંડી પડે છે. મંદિરમાં શંખ વાગે છે.",
+                        "થાળીમાં ગરમ રોટલી છે. જંગલમાં વૃક્ષો છે.",
+                        "શ્રુતલેખન: શંખ, ઢોલક, ઠંડી, થાળી, જંગલ.",
+                        "શ્રુતલેખન: પતંગ, થાળી, શિયાળામાં ખૂબ ઠંડી પડે છે.",
+                        "અર્થગ્રહણ: 'શિયાળામાં ખૂબ ઠંડી પડે છે.' -> ઠંડી ક્યારે પડે છે?",
+                        "અર્થગ્રહણ: 'મંદિર પર ધજા ફરકે છે.' -> ધજા ક્યાં ફરકે છે?",
+                        "'ઠંડી' અથવા 'શંખ' વિશે એક વાક્ય જાતે લખાવો.",
+                        "કોઈપણ 2 વાક્યો જાતે લખાવો.",
+                        "ઢં   ઠં   શં   થં   જં",
+                        "અર્થગ્રહણ: 'જંગલમાં વૃક્ષો છે.' -> વૃક્ષો ક્યાં છે?",
+                        "'પતંગ' અથવા 'ઢોલક' વિશે 1 વાક્ય જાતે લખાવો."
+                    ]
+                }
+            ]
+        },
+        {
+            id: "kadam_6",
+            minGradeRank: 3,
+            originLabel: "ધોરણ 3 (કદમ 6)",
+            name: "કદમ 6 — ષ, ત્ર, જ્ઞ, ક્ષ, ઋ, રૂ જોડાક્ષરો",
+            letters: "ષ, ત્ર, જ્ઞ, ક્ષ, ઋ, રૂ",
+            krams: [
+                {
+                    no: 45,
+                    title: "જોડાક્ષરોની ઓળખ, લેખન અને વાંચન (કદમ 6)",
+                    samples: [
+                        "ષ   ત્ર   જ્ઞ   ક્ષ   ઋ   રૂ",
+                        "ઋષિ, પક્ષી, ત્રિકોણ, વિજ્ઞાન, રૂપિયા",
+                        "ક્ષમા, ત્રિશૂળ, જ્ઞાની, ષટ્કોણ, રૂમાલ",
+                        "ઋષિ આશ્રમમાં રહે છે. આકાશમાં પક્ષીઓ ઊડે છે.",
+                        "વિજ્ઞાનથી નવી શોધ થાય છે. બાળકો જ્ઞાન મેળવે છે.",
+                        "ત્રિકોણને ત્રણ બાજુ હોય છે. ષટ્કોણમાં છ ખૂણા હોય છે.",
+                        "શ્રુતલેખન: ઋષિ, પક્ષી, વિજ્ઞાન, ત્રિકોણ, રૂમાલ.",
+                        "શ્રુતલેખન: જ્ઞાન, ક્ષમા, ઋષિ આશ્રમમાં રહે છે.",
+                        "અર્થગ્રહણ: 'ઋષિ આશ્રમમાં રહે છે.' -> ઋષિ ક્યાં રહે છે?",
+                        "અર્થગ્રહણ: 'આકાશમાં પક્ષીઓ ઊડે છે.' -> પક્ષીઓ ક્યાં ઊડે છે?",
+                        "'પક્ષી' અથવા 'જ્ઞાન' વિશે 2 વાક્યો જાતે લખાવો.",
+                        "કદમ 6 ના કોઈપણ 5 જોડાક્ષર શબ્દો જાતે લખાવો.",
+                        "ત્ર   જ્ઞ   ક્ષ   ષ   ઋ   રૂ",
+                        "અર્થગ્રહણ: 'વિજ્ઞાનથી નવી શોધ થાય છે.' -> શેનાથી નવી શોધ થાય છે?",
+                        "'ત્રિકોણ' અથવા 'રૂમાલ' વિશે 1-2 વાક્યો જાતે લખાવો."
+                    ]
+                }
+            ]
+        },
+        {
+            id: "kadam_7_9",
+            minGradeRank: 4,
+            originLabel: "ધોરણ 4 (કદમ 7-9)",
+            name: "કદમ 7 થી 9 — સદંડી, દંડરહિત અને સમાન-અસમાન જોડાક્ષરો",
+            letters: "સ્ત, ન્ય, ખ્ય, પ્ય, મ્મ  |  ટ્ટ, ડ્ડ, દ્વ, દ્ધ  |  ચ્ચ, જ્જ, લ્લ, ક્ક, સ્વ",
+            krams: [
+                {
+                    no: 52,
+                    title: "સદંડી મૂળાક્ષરોના જોડાક્ષરો: વાંચન, શ્રુતલેખન અને અર્થગ્રહણ (કદમ 7)",
+                    samples: [
+                        "પુસ્તક, મમ્મી, કન્યા, પ્યાલો, મુખ્ય",
+                        "રસ્તો, ખ્યાલ, પ્યાર, અન્ન, સંધ્યા",
+                        "મારી પાસે સુંદર પુસ્તક છે. મમ્મી મીઠી વાર્તા કહે છે.",
+                        "પ્યાલામાં ઠંડું પાણી છે. કન્યા શાળાએ જાય છે.",
+                        "મુખ્ય શિક્ષક સભામાં બોલે છે. રસ્તા પર ધ્યાનથી ચાલો.",
+                        "અન્નનો બગાડ ન કરો. સંધ્યા સમયે દીવો થાય છે.",
+                        "શ્રુતલેખન: પુસ્તક, મમ્મી, પ્યાલો, કન્યા, રસ્તો.",
+                        "શ્રુતલેખન: મુખ્ય, ખ્યાલ, પ્યાર, અન્ન, સંધ્યા.",
+                        "અર્થગ્રહણ: 'રમેશ પુસ્તક વાંચે છે.' -> રમેશ શું વાંચે છે?",
+                        "અર્થગ્રહણ: 'કન્યા સુંદર ગીત ગાય છે.' -> કોણ ગીત ગાય છે?",
+                        "અર્થગ્રહણ: 'સંધ્યા સમયે પંખીઓ ઘરે ફરે છે.' -> ક્યારે ઘરે ફરે છે?",
+                        "સદંડી જોડાક્ષરવાળા શબ્દો પરથી 2 વાક્યો જાતે લખાવો.",
+                        "સ્ત   ન્ય   ખ્ય   પ્ય   મ્મ",
+                        "અર્થગ્રહણ: 'રસ્તા પર ધ્યાનથી ચાલો.' -> ક્યાં ધ્યાનથી ચાલવું જોઈએ?",
+                        "'પુસ્તક' અથવા 'મમ્મી' વિશે 2 વાક્યો જાતે લખાવો."
+                    ]
+                },
+                {
+                    no: 55,
+                    title: "દંડરહિત અને સમાન-અસમાન જોડાક્ષરો: વાંચન અને અર્થગ્રહણ (કદમ 8-9)",
+                    samples: [
+                        "લાડુ, ખટ્ટમીઠું, વિદ્વાન, બુદ્ધિ, પટ્ટો, વિદ્યા, દ્વાર",
+                        "બચ્ચું, સજ્જન, કિલ્લો, ચક્કર, સ્વચ્છ, પક્કું, બિલ્લી, વિશ્વાસ",
+                        "હાથીના ગળામાં મોટો પટ્ટો છે. વિદ્યાથી વિનય આવે છે.",
+                        "બુદ્ધિથી મુશ્કેલ કામ ઉકેલાય છે. ઘરનું દ્વાર ખુલ્લું છે.",
+                        "આપણું ગામ સ્વચ્છ અને સુંદર છે. બિલ્લી દૂધ પીએ છે.",
+                        "કિલ્લો ઊંચા ડુંગર પર છે. સજ્જન માણસ સૌને મદદ કરે છે.",
+                        "શ્રુતલેખન: પટ્ટો, વિદ્વાન, બુદ્ધિ, સ્વચ્છ, કિલ્લો, સજ્જન.",
+                        "શ્રુતલેખન: વિદ્યા, દ્વાર, બચ્ચું, વિશ્વાસ, પક્કું.",
+                        "અર્થગ્રહણ: 'બુદ્ધિશાળી શિયાળે યુક્તિથી કામ લીધું.' -> કેવી રીતે કામ લીધું?",
+                        "અર્થગ્રહણ: 'રાજાનો કિલ્લો પહાડની ટોચ પર હતો.' -> કિલ્લો ક્યાં હતો?",
+                        "અર્થગ્રહણ: 'સ્વચ્છતા રાખવાથી રોગ અટકે છે.' -> શું રાખવાથી રોગ અટકે છે?",
+                        "સ્વચ્છતા અથવા બુદ્ધિ વિશે 2-3 વાક્યો જાતે લખાવો.",
+                        "ટ્ટ   દ્વ   દ્ધ   ચ્ચ   લ્લ   સ્વ",
+                        "અર્થગ્રહણ: 'વિદ્યાથી વિનય આવે છે.' -> શેનાથી વિનય આવે છે?",
+                        "દંડરહિત જોડાક્ષરવાળા શબ્દો પરથી 2 વાક્યો જાતે લખાવો."
+                    ]
+                }
+            ]
+        },
+        {
+            id: "kadam_10",
+            minGradeRank: 5,
+            originLabel: "ધોરણ 5 (કદમ 10)",
+            name: "કદમ 10 — 'ર' કાર જોડાક્ષરો: પ્ર, ક્ર, ગર્વ, પર્વત, સૂર્ય",
+            letters: "પ્ર, ક્ર, ગર્વ, પર્વત, સૂર્ય, પ્રાર્થના, પ્રગતિ",
+            krams: [
+                {
+                    no: 61,
+                    title: "'ર' કાર જોડાક્ષરો: વાંચન, શ્રુતલેખન અને અર્થગ્રહણ (કદમ 10)",
+                    samples: [
+                        "પ્રકાશ, ચક્ર, પર્વત, સૂર્ય, પ્રાર્થના, ક્રમ, પ્રેમ, ગર્વ, પ્રગતિ, વ્રત",
+                        "સવારે સૂર્ય ઊગે ત્યારે ચારેબાજુ પ્રકાશ ફેલાય છે. શાળામાં પ્રાર્થના થાય છે.",
+                        "ઊંચા પર્વત પર ઠંડી હવા વાય છે. મહેનતથી પ્રગતિ થાય છે.",
+                        "ગુરુજનો પ્રત્યે ગર્વ અને આદર રાખો. નિયમિત ક્રમમાં કામ કરો.",
+                        "શ્રુતલેખન: પ્રકાશ, પર્વત, સૂર્ય, પ્રાર્થના, ચક્ર.",
+                        "શ્રુતલેખન: પ્રગતિ, પ્રેમ, ક્રમ, ગર્વ, વ્રત.",
+                        "અર્થગ્રહણ: 'શાળામાં દરરોજ સવારે પ્રાર્થના થાય છે.' -> ક્યારે પ્રાર્થના થાય છે?",
+                        "અર્થગ્રહણ: 'સૂર્ય ઊગતાં અંધારું દૂર થાય છે.' -> શું દૂર થાય છે?",
+                        "અર્થગ્રહણ: 'મહેનતથી પ્રગતિ થાય છે.' -> શેનાથી પ્રગતિ થાય છે?",
+                        "અર્થગ્રહણ: 'પર્વત પર ઝરણાં વહે છે.' -> ઝરણાં ક્યાં વહે છે?",
+                        "'પ્રાર્થના' અથવા 'સૂર્ય' વિશે 3 વાક્યો જાતે લખાવો.",
+                        "'ર' કાર જોડાક્ષરવાળા 5 શબ્દો લખી તેનો વાક્યપ્રયોગ કરાવો.",
+                        "પ્ર   ક્ર   ત્ર   ગ્ર   શ્ર   દ્ર",
+                        "અર્થગ્રહણ: 'નિયમિત ક્રમમાં કામ કરવાથી ભૂલ ઓછી થાય છે.' -> કેવી રીતે કામ કરવું જોઈએ?",
+                        "'પ્રગતિ' અથવા 'પર્વત' વિશે 3-4 વાક્યો જાતે લખાવો."
+                    ]
+                }
+            ]
+        },
+        {
+            id: "kadam_11_std4",
+            minGradeRank: 4,
+            originLabel: "ધોરણ 4 (કદમ 11)",
+            name: "કદમ 11 (ધોરણ 4 સ્તર) — 30 થી 40 શબ્દ/મિનિટ વાંચન ઝડપ અને અર્થગ્રહણ",
+            letters: "30-40 શબ્દો/મિનિટ ફકરા વાંચન અને પ્રશ્ન-જવાબ",
+            krams: [
+                {
+                    no: 64,
+                    title: "વાંચન ઝડપ 30 શબ્દો/મિનિટ અર્થગ્રહણ સાથે (કદમ 11 • ધોરણ 4)",
+                    samples: [
+                        "અમારા ગામમાં એક સુંદર તળાવ છે. તળાવની કાંઠે ઘણા વૃક્ષો છે. સવારે પંખીઓ કલરવ કરે છે. બાળકો રોજ શાળાએ ભણવા જાય છે. ગામમાં સ્વચ્છતા જાળવવામાં આવે છે. (પ્રશ્ન: તળાવની કાંઠે શું છે?)",
+                        "વૃક્ષો આપણા સાચા મિત્ર છે. તે આપણને શુદ્ધ હવા અને છાંયડો આપે છે. પંખીઓને વૃક્ષો પર માળા હોય છે. આપણે વધુ વૃક્ષો વાવવા જોઈએ. (પ્રશ્ન: વૃક્ષો આપણને શું આપે છે?)",
+                        "સવારે વહેલા ઊઠવું એ સારી ટેવ છે. સૂર્ય ઊગે છે ત્યારે આકાશ સુંદર લાગે છે. કસરત કરવાથી શરીર તંદુરસ્ત રહે છે. (પ્રશ્ન: કસરત કરવાથી શું થાય છે?)",
+                        "પાણી જીવન માટે ખૂબ જરૂરી છે. પાણીનો બગાડ થતો અટકાવવો જોઈએ. નદી અને તળાવમાં ચોખ્ખું પાણી સાચવવું જોઈએ. (પ્રશ્ન: આપણે શું ન કરવું જોઈએ?)",
+                        "પુસ્તકો વાંચવાથી જ્ઞાન અને સમજ વધે છે. વાર્તાના પુસ્તકો વાંચવાની ખૂબ મજા આવે છે. પુસ્તકો સાચવીને રાખવા જોઈએ. (પ્રશ્ન: પુસ્તકો વાંચવાથી શું વધે છે?)",
+                        "શાળામાં દરરોજ પ્રાર્થના થાય છે. શિક્ષકો પ્રેમ અને ધીરજથી શીખવે છે. વિદ્યાર્થીઓ નિયમિત અભ્યાસ કરે છે. (પ્રશ્ન: શાળામાં દરરોજ શું થાય છે?)",
+                        "રમતગમતથી શરીર મજબૂત અને સ્ફૂર્તિલું બને છે. બાળકો સાંજે મેદાનમાં રમે છે. રમતમાં સૌએ સંપીને રમવું જોઈએ. (પ્રશ્ન: બાળકો ક્યાં રમે છે?)",
+                        "સ્વચ્છતા રાખવાથી રોગો દૂર રહે છે. કચરો હંમેશા કચરાપેટીમાં જ નાખવો જોઈએ. સ્વચ્છ ગામ સુંદર લાગે છે. (પ્રશ્ન: કચરો ક્યાં નાખવો જોઈએ?)",
+                        "ચોમાસામાં કાળા વાદળ ઘેરાય છે અને વરસાદ આવે છે. ધરતી લીલીછમ બને છે. ખેડૂતો ખુશ થાય છે. (પ્રશ્ન: કઈ ઋતુમાં વરસાદ આવે છે?)",
+                        "મહેનત અને પ્રામાણિકતાથી સફળતા મળે છે. આપણે હંમેશા સાચું બોલવું જોઈએ. (પ્રશ્ન: શેનાથી સફળતા મળે છે?)",
+                        "આપણા ઘરની આસપાસ સ્વચ્છતા રાખવી જોઈએ. પાણી ભરાઈ ન રહે તેનું ધ્યાન રાખવું જોઈએ. (પ્રશ્ન: શેનું ધ્યાન રાખવું જોઈએ?)",
+                        "વાંચેલા ફકરાના આધારે 2-3 વાક્યો જાતે લખાવો.",
+                        "ગાય આપણને મીઠું દૂધ આપે છે. ગાયના દૂધમાંથી ઘી, છાશ અને માખણ બને છે. આપણે ગાયનું જતન કરવું જોઈએ. (પ્રશ્ન: દૂધમાંથી શું શું બને છે?)",
+                        "બગીચામાં રંગબેરંગી ફૂલો ખીલે છે. ફૂલો પર પતંગિયાં બેસે છે. બગીચામાં ફરવાની મજા આવે છે. (પ્રશ્ન: ફૂલો પર કોણ બેસે છે?)",
+                        "વિષય 'મારું ગામ' પર 2-3 વાક્યો જાતે લખાવો."
+                    ]
+                },
+                {
+                    no: 65,
+                    title: "વાંચન ઝડપ 40 શબ્દો/મિનિટ અર્થગ્રહણ સાથે (કદમ 11 • ધોરણ 4)",
+                    samples: [
+                        "આપણું ગામ ખૂબ સુંદર અને સ્વચ્છ છે. ગામમાં પ્રાથમિક શાળા, દવાખાનું અને પુસ્તકાલય છે. લોકો હળીમળીને રહે છે અને તહેવારો સાથે ઉજવે છે. ગામના રસ્તા ચોખ્ખા રાખવામાં આવે છે. વૃક્ષોથી ગામની શોભા વધે છે. (પ્રશ્ન: ગામમાં કઈ કઈ સુવિધાઓ છે?)",
+                        "પુસ્તકાલયમાં વિવિધ વિષયોના પુસ્તકો હોય છે. બાળકો ત્યાં શાંતિથી વાંચન કરે છે. વાંચન કરવાથી નવા શબ્દો અને વિચારો જાણવા મળે છે. પુસ્તકોને નુકસાન ન થાય તે રીતે સાચવવા જોઈએ. (પ્રશ્ન: બાળકો પુસ્તકાલયમાં શું કરે છે?)",
+                        "ઋતુઓ બદલાય તેમ આપણો પહેરવેશ અને ખોરાક પણ બદલાય છે. ઉનાળામાં સુતરાઉ કપડાં, ચોમાસામાં છત્રી કે રેઈનકોટ અને શિયાળામાં ગરમ કપડાં પહેરવામાં આવે છે. (પ્રશ્ન: શિયાળામાં કેવા કપડાં પહેરવામાં આવે છે?)",
+                        "મધમાખી ફૂલો પરથી રસ ચૂસીને મધ બનાવે છે. મધ સ્વાસ્થ્ય માટે ખૂબ ગુણકારી હોય છે. પ્રકૃતિમાં દરેક જીવનું આગવું મહત્વ છે. (પ્રશ્ન: મધમાખી શું બનાવે છે?)",
+                        "ટપાલી ગામડે-ગામડે ટપાલ પહોંચાડે છે. લોકો તેની રાહ જુએ છે. પહેલાં પત્રો દ્વારા સંદેશા મોકલાતા હતા. (પ્રશ્ન: ટપાલી શું કામ કરે છે?)",
+                        "નદીઓ આપણને પીવાનું અને સિંચાઈ માટે પાણી આપે છે. નદી કિનારે ગામો અને શહેરો વસે છે. નદીનું પાણી દૂષિત ન કરવું જોઈએ. (પ્રશ્ન: નદીનું પાણી શેના માટે ઉપયોગી છે?)",
+                        "પ્રાર્થના સભામાં દેશભક્તિના ગીતો, સુવિચાર અને સમાચાર વંચાય છે. તેનાથી દિવસની સારી શરૂઆત થાય છે. સૌ શિસ્તમાં ઊભા રહે છે. (પ્રશ્ન: પ્રાર્થના સભામાં શું શું થાય છે?)",
+                        "ખેડૂત ખેતરમાં અનાજ, કઠોળ અને શાકભાજી પકવે છે. તેની મહેનતથી આપણને ભોજન મળે છે. આપણે અન્નનો આદર કરવો જોઈએ. (પ્રશ્ન: આપણને ભોજન કોની મહેનતથી મળે છે?)",
+                        "સવારની તાજી હવા સ્વાસ્થ્ય માટે ફાયદાકારક છે. સવારે ચાલવા અને પ્રાણાયામ કરવાથી મન પ્રફુલ્લિત રહે છે. (પ્રશ્ન: સવારે ચાલવાથી શું ફાયદો થાય છે?)",
+                        "સાચા મિત્રો મુશ્કેલીમાં મદદરૂપ થાય છે. મિત્રતામાં વિશ્વાસ અને આદર હોવા જોઈએ. સારા મિત્રો સાથે સમય વિતાવવો ગમે છે. (પ્રશ્ન: સાચા મિત્રો ક્યારે મદદરૂપ થાય છે?)",
+                        "શાળાના બગીચામાં વિવિધ ફૂલછોડ છે. ફૂલો જોઈને મન આનંદિત થાય છે. (પ્રશ્ન: ફૂલો જોઈને શું થાય છે?)",
+                        "વિષય 'મારી શાળા' પર 3-4 વાક્યો જાતે લખાવો.",
+                        "દવાખાનામાં ડૉક્ટર અને નર્સ દર્દીઓની સારવાર કરે છે. બીમાર પડે ત્યારે તરત ડૉક્ટરની સલાહ લેવી જોઈએ. સ્વસ્થ રહેવા માટે સાફસફાઈ જરૂરી છે. (પ્રશ્ન: દવાખાનામાં કોણ સારવાર કરે છે?)",
+                        "ચોમાસામાં નદી-તળાવ પાણીથી ભરાઈ જાય છે. ખેડૂતો વાવણી કરે છે અને ચારેબાજુ હરિયાળી છવાય છે. (પ્રશ્ન: ચોમાસામાં શું થાય છે?)",
+                        "વિષય 'વૃક્ષો આપણા મિત્ર' પર 3 વાક્યો જાતે લખાવો."
+                    ]
+                }
+            ]
+        },
+        {
+            id: "kadam_11_std5",
+            minGradeRank: 5,
+            originLabel: "ધોરણ 5 (કદમ 11)",
+            name: "કદમ 11 (ધોરણ 5 સ્તર) — 50-60 શબ્દ/મિનિટ વાંચન અને 4 થી 6+ વાક્યોનું લેખન",
+            letters: "50-60 શબ્દો/મિનિટ વાંચન, અર્થગ્રહણ અને 4, 5, 6+ વાક્યોનું લેખન",
+            krams: [
+                {
+                    no: 66,
+                    title: "વાંચન ઝડપ 50 શબ્દો/મિનિટ અર્થગ્રહણ સાથે (કદમ 11 • ધોરણ 5)",
+                    samples: [
+                        "પર્યાવરણનું રક્ષણ કરવું એ આપણા સૌની સહિયારી જવાબદારી છે. વૃક્ષો કાપવાને બદલે નવા વૃક્ષો વાવવા જોઈએ. પ્લાસ્ટિકનો ઉપયોગ ઘટાડવો જોઈએ અને કચરો યોગ્ય જગ્યાએ નાખવો જોઈએ. હવા, પાણી અને જમીન સ્વચ્છ રહેશે તો જ આવનારી પેઢી સુરક્ષિત અને તંદુરસ્ત રહેશે. (પ્રશ્ન: પર્યાવરણ સુરક્ષિત રાખવા શું કરવું જોઈએ?)",
+                        "વાંચન એ મન અને બુદ્ધિનો વિકાસ કરે છે. જે બાળકો નિયમિત વાંચન કરે છે તેમની કલ્પનાશક્તિ અને ભાષા કૌશલ્ય ખીલે છે. શાળાના પુસ્તકાલયનો સદુપયોગ કરીને રોજ થોડો સમય વાંચન કરવું જોઈએ. (પ્રશ્ન: નિયમિત વાંચનથી બાળકોમાં કયા કૌશલ્ય ખીલે છે?)",
+                        "સમયનું મૂલ્ય સમજવું ખૂબ જરૂરી છે. વીતેલો સમય પાછો આવતો નથી. દરેક કામ સમયસર પૂરું કરવાથી તાણ ઓછો થાય છે અને આત્મવિશ્વાસ વધે છે. સમયપાલન એ સફળ વ્યક્તિની ઓળખ છે. (પ્રશ્ન: સમયસર કામ પૂરું કરવાથી શું થાય છે?)",
+                        "આપણા દેશમાં વિવિધ તહેવારો ઉજવાય છે. દિવાળી, ઉત્તરાયણ, હોળી અને રક્ષાબંધન જેવા તહેવારો લોકોને એકબીજાની નજીક લાવે છે. તહેવારોમાં પર્યાવરણને નુકસાન ન થાય તે રીતે ઉજવણી કરવી જોઈએ. (પ્રશ્ન: તહેવારોની ઉજવણી કેવી રીતે કરવી જોઈએ?)",
+                        "રમતગમત માત્ર મનોરંજન નથી, પરંતુ જીવનના મહત્વના ગુણો શીખવે છે. ટીમમાં રમવાથી સહકાર, શિસ્ત અને નેતૃત્વના ગુણો વિકસે છે. હાર કે જીત બંનેને ખેલદિલીથી સ્વીકારવી જોઈએ. (પ્રશ્ન: ટીમમાં રમવાથી કયા ગુણો વિકસે છે?)",
+                        "પાણી બચાવવા માટે નાના-નાના પ્રયત્નો ખૂબ અસરકારક બને છે. નળ બંધ રાખવો, વરસાદી પાણીનો સંગ્રહ કરવો અને પાણીનો બગાડ અટકાવવો જરૂરી છે. જળ છે તો જીવન છે. (પ્રશ્ન: પાણી બચાવવા કયા પ્રયત્નો કરી શકાય?)",
+                        "શાળા એ જ્ઞાન અને સંસ્કારનું મંદિર છે. અહીં બાળકો અક્ષરજ્ઞાન સાથે સારા સંસ્કાર પણ મેળવે છે. શિક્ષકો અને મિત્રોના સહકારથી શાળાનું વાતાવરણ આનંદદાયક બને છે. (પ્રશ્ન: શાળામાં બાળકોને શું શું મળે છે?)",
+                        "સ્વસ્થ શરીરમાં જ સ્વસ્થ મન રહે છે. સંતુલિત આહાર, પૂરતી ઊંઘ અને નિયમિત કસરતથી શરીર તંદુરસ્ત રહે છે. બહારનો બિનઆરોગ્યપ્રદ ખોરાક ટાળવો જોઈએ. (પ્રશ્ન: શરીર તંદુરસ્ત રાખવા શું જરૂરી છે?)",
+                        "પ્રાણીઓ અને પક્ષીઓ પ્રત્યે કરુણા રાખવી જોઈએ. ઉનાળામાં પક્ષીઓ માટે પાણીના કુંડા મૂકવા જોઈએ. કોઈ જીવને હેરાન કરવું ન જોઈએ. (પ્રશ્ન: ઉનાળામાં પક્ષીઓ માટે શું કરવું જોઈએ?)",
+                        "વિજ્ઞાન અને ટેકનોલોજીથી જીવન સરળ બન્યું છે. શિક્ષણ, આરોગ્ય અને સંદેશાવ્યવહારમાં નવી સુવિધાઓ આવી છે. તેનો ઉપયોગ સમજદારીપૂર્વક કરવો જોઈએ. (પ્રશ્ન: વિજ્ઞાન અને ટેકનોલોજીનો ઉપયોગ કેવી રીતે કરવો જોઈએ?)",
+                        "આપણા દેશની પ્રગતિ શિક્ષિત અને જાગૃત નાગરિકો પર નિર્ભર છે. વાંચન, લેખન અને ચર્ચા દ્વારા બાળકો પોતાનો સર્વાંગી વિકાસ કરી શકે છે. (પ્રશ્ન: દેશની પ્રગતિ શેના પર નિર્ભર છે?)",
+                        "સહકાર અને સંવાદિતાથી મોટા કાર્યો પણ સરળ બને છે. નાના-મોટા સૌનો આદર કરવો એ આપણી સંસ્કૃતિ છે. (પ્રશ્ન: મોટા કાર્યો કેવી રીતે સરળ બને છે?)",
+                        "પ્રાર્થના કરવાથી મનને શાંતિ અને સકારાત્મક ઊર્જા મળે છે. આપણે સૌની સલામતી અને સુખ માટે પ્રાર્થના કરવી જોઈએ. (પ્રશ્ન: પ્રાર્થના કરવાથી શું મળે છે?)",
+                        "વડીલોના અનુભવમાંથી આપણને ઘણું શીખવા મળે છે. તેમનો આદર કરવો અને તેમની વાત ધ્યાનથી સાંભળવી જોઈએ. (પ્રશ્ન: આપણને શેમાંથી શીખવા મળે છે?)",
+                        "વિષય 'પાણીનું મહત્વ' પર 4 વાક્યો જાતે લખાવો."
+                    ]
+                },
+                {
+                    no: 67,
+                    title: "વાંચન ઝડપ 60 શબ્દો/મિનિટ અર્થગ્રહણ સાથે (કદમ 11 • ધોરણ 5)",
+                    samples: [
+                        "આપણા દેશની પ્રગતિ શિક્ષિત અને જાગૃત નાગરિકો પર નિર્ભર છે. જ્યારે દરેક બાળકને ગુણવત્તાયુક્ત શિક્ષણ મળે છે ત્યારે સમાજમાં નવી ચેતના આવે છે. શિક્ષકોના માર્ગદર્શન અને વિદ્યાર્થીઓની મહેનતથી શાળાઓમાં સુંદર પરિણામ મળે છે. વાંચન, લેખન અને ચર્ચા દ્વારા બાળકો પોતાનો સર્વાંગી વિકાસ કરી શકે છે. (પ્રશ્ન: દેશની પ્રગતિ શેના પર નિર્ભર છે?)",
+                        "કુદરતે આપણને નદીઓ, પર્વતો, જંગલો અને ફળદ્રુપ જમીન જેવી અમૂલ્ય ભેટ આપી છે. જો આપણે કુદરતી સંસાધનોનો વિવેકપૂર્ણ ઉપયોગ કરીશું તો પ્રકૃતિનું સંતુલન જળવાઈ રહેશે. વૃક્ષોનું જતન અને જળસંચય એ આજના સમયની સૌથી મોટી જરૂરિયાત છે. (પ્રશ્ન: આજના સમયની સૌથી મોટી જરૂરિયાત કઈ છે?)",
+                        "પુસ્તકાલય એ જ્ઞાનનો ભંડાર છે. ત્યાં ઇતિહાસ, વિજ્ઞાન, વાર્તા, કવિતા અને જીવનચરિત્રના પુસ્તકો મળે છે. નિયમિત વાંચનની ટેવ કેળવવાથી વ્યક્તિની વિચારશક્તિ સ્પષ્ટ બને છે અને નવા વિચારો જન્મે છે. (પ્રશ્ન: નિયમિત વાંચનથી વ્યક્તિમાં શું બદલાવ આવે છે?)",
+                        "સહકાર અને સંવાદિતાથી મોટા કાર્યો પણ સરળ બને છે. પરિવાર, શાળા અને સમાજમાં જ્યારે સૌ મળીને કામ કરે છે ત્યારે વાતાવરણ શાંત અને પ્રેમળ રહે છે. નાના-મોટા સૌનો આદર કરવો એ આપણી સંસ્કૃતિ છે. (પ્રશ્ન: મોટા કાર્યો કેવી રીતે સરળ બને છે?)",
+                        "સ્વચ્છતા માત્ર દેખાવ પૂરતી નથી, પરંતુ આરોગ્ય સાથે જોડાયેલી છે. ઘર, શાળા અને જાહેર સ્થળો સ્વચ્છ રાખવાથી ચેપી રોગો ફેલાતા અટકે છે. દરેક નાગરિક સ્વચ્છતાની ટેવ અપનાવે તો આખું ગામ કે શહેર સ્વચ્છ બની શકે છે. (પ્રશ્ન: જાહેર સ્થળો સ્વચ્છ રાખવાથી કયો ફાયદો થાય છે?)",
+                        "જીવનમાં શિસ્ત અને નિયમિતતા ખૂબ મહત્વની છે. સવારે સમયસર ઊઠવું, અભ્યાસ કરવો અને નિયમોનું પાલન કરવું બાળકને આત્મનિર્ભર બનાવે છે. શિસ્તબદ્ધ જીવનથી ધ્યેય પ્રાપ્ત કરવું સરળ બને છે. (પ્રશ્ન: શિસ્તબદ્ધ જીવનથી કયો લાભ થાય છે?)",
+                        "ખેતી એ આપણા અર્થતંત્રનો મહત્વનો આધાર છે. ખેડૂતો તડકો, વરસાદ કે ઠંડી જોયા વગર અનાજ પકવે છે. નવી ખેતી પદ્ધતિ અને પાણીના યોગ્ય ઉપયોગથી પાક સારો થાય છે. (પ્રશ્ન: ખેડૂતો કઈ પરિસ્થિતિમાં કામ કરે છે?)",
+                        "કળા, સંગીત અને રમતગમત બાળકોની છુપી પ્રતિભાને બહાર લાવે છે. દરેક બાળકમાં કોઈને કોઈ ખાસ આવડત હોય છે. શિક્ષકો અને વાલીઓએ બાળકોની રુચિને પ્રોત્સાહન આપવું જોઈએ. (પ્રશ્ન: બાળકોની છુપી પ્રતિભા કઈ રીતે બહાર આવે છે?)",
+                        "સાચું બોલવું અને પ્રામાણિક રહેવું એ ઉત્તમ ચારિત્ર્યની નિશાની છે. ક્યારેક મુશ્કેલી આવે તો પણ સત્યનો સાથ છોડવો ન જોઈએ. પ્રામાણિક વ્યક્તિ પર સૌનો વિશ્વાસ રહે છે. (પ્રશ્ન: પ્રામાણિક વ્યક્તિ પર કોનો વિશ્વાસ રહે છે?)",
+                        "આપણી માતૃભાષા ગુજરાતી ખૂબ મીઠી અને સમૃદ્ધ છે. માતૃભાષામાં વિચારવું, વાંચવું અને લખવું સરળ અને સહજ છે. આપણે આપણી ભાષાનું જતન અને ગૌરવ કરવું જોઈએ. (પ્રશ્ન: માતૃભાષામાં શું કરવું સરળ અને સહજ છે?)",
+                        "આપણા ઘર અને શાળામાં સ્વચ્છતા જાળવવી એ સૌની ફરજ છે. (પ્રશ્ન: સ્વચ્છતા જાળવવી એ કોની ફરજ છે?)",
+                        "નિયમિત અભ્યાસ અને સારી ટેવોથી બાળક આગળ વધે છે. (પ્રશ્ન: બાળક કેવી રીતે આગળ વધે છે?)",
+                        "વૃક્ષો આપણને ઓક્સિજન આપે છે અને હવા શુદ્ધ રાખે છે. વધુ વૃક્ષો વાવીને આપણે ધરતીને હરિયાળી બનાવી શકીએ છીએ. (પ્રશ્ન: વૃક્ષો હવા કેવી રાખે છે?)",
+                        "સ્વચ્છતા અને શિસ્ત એ સફળ સમાજના પાયા છે. દરેક બાળકે નાનપણથી જ આ ગુણો કેળવવા જોઈએ. (પ્રશ્ન: સફળ સમાજના પાયા કયા છે?)",
+                        "વિષય 'મારા સપનાનું ગામ' પર 5 વાક્યો જાતે લખાવો."
+                    ]
+                },
+                {
+                    no: 68,
+                    title: "4 થી 6+ વાક્યોનું સ્વતંત્ર લેખન (કદમ 11 • ધોરણ 5)",
+                    samples: [
+                        "વિષય: 'મારી શાળા' — બાળકને ઓછામાં ઓછા 4 થી 5 વાક્યો જાતે લખાવો.",
+                        "વિષય: 'વૃક્ષોનું મહત્વ' — બાળકને ઓછામાં ઓછા 4 થી 5 વાક્યો જાતે લખાવો.",
+                        "વિષય: 'પાણી બચાવો' — બાળકને ઓછામાં ઓછા 4 થી 5 વાક્યો જાતે લખાવો.",
+                        "વિષય: 'મારો પ્રિય તહેવાર' — બાળકને ઓછામાં ઓછા 4 થી 5 વાક્યો જાતે લખાવો.",
+                        "વિષય: 'મારું ગામ' — બાળકને ઓછામાં ઓછા 5 થી 6 વાક્યો જાતે લખાવો.",
+                        "વિષય: 'પર્યાવરણ બચાવો' — બાળકને ઓછામાં ઓછા 5 થી 6 વાક્યો જાતે લખાવો.",
+                        "વિષય: 'સમયનું મહત્વ' — બાળકને ઓછામાં ઓછા 5 થી 6 વાક્યો જાતે લખાવો.",
+                        "વિષય: 'મારા માતા-પિતા' — બાળકને ઓછામાં ઓછા 5 થી 6 વાક્યો જાતે લખાવો.",
+                        "વિષય: 'મારી પ્રિય શાળા અને શિક્ષકો' — બાળકને 6 કે તેથી વધુ વાક્યોનો ફકરો જાતે લખાવો.",
+                        "વિષય: 'સ્વચ્છ ભારત - સ્વસ્થ ભારત' — બાળકને 6 કે તેથી વધુ વાક્યોનો ફકરો જાતે લખાવો.",
+                        "વિષય: 'વાંચનનું મહત્વ' — બાળકને 6 કે તેથી વધુ વાક્યોનો ફકરો જાતે લખાવો.",
+                        "વિષય: 'હું મોટો થઈને શું બનીશ?' — બાળકને 6 કે તેથી વધુ વાક્યોનો ફકરો જાતે લખાવો.",
+                        "વિષય: 'મારો પ્રિય રમતવીર' — બાળકને 4 થી 5 વાક્યો જાતે લખાવો.",
+                        "વિષય: 'પુસ્તકાલયનો ફાયદો' — બાળકને 5 થી 6 વાક્યો જાતે લખાવો.",
+                        "વિષય: 'આપણી માતૃભાષા ગુજરાતી' — બાળકને 6 કે તેથી વધુ વાક્યોનો ફકરો જાતે લખાવો."
+                    ]
+                }
+            ]
+        }
+    ];
+
+    const gradeMeta = {
+        balvatika: { rank: 0, label: "બાલવાટિકા", desc: "બાલવાટિકા કદમ સુધીના ક્રમિક કદમ" },
+        std1:      { rank: 1, label: "ધોરણ 1",    desc: "બાલવાટિકા થી કદમ 1 સુધીના ક્રમિક કદમ" },
+        std2:      { rank: 2, label: "ધોરણ 2",    desc: "બાલવાટિકા થી કદમ 1, 2 અને 3 સુધીના ક્રમિક કદમ" },
+        std3:      { rank: 3, label: "ધોરણ 3",    desc: "બાલવાટિકા થી કદમ 1, 2, 3, 4 અને 6 સુધીના ક્રમિક કદમ" },
+        std4:      { rank: 4, label: "ધોરણ 4",    desc: "બાલવાટિકા થી કદમ 1, 2, 3, 4, 6, 7-9 અને 11 (ધોરણ 4) સુધીના ક્રમિક કદમ" },
+        std5:      { rank: 5, label: "ધોરણ 5",    desc: "બાલવાટિકા થી કદમ 10 અને 11 (ધોરણ 5) સુધીના સંપૂર્ણ ક્રમિક કદમ" }
+    };
+
+    const praiseSentences = [
+        "શાબાશ! તમે ખૂબ જ સ્પષ્ટ અને સુંદર વાંચન કર્યું છે.",
+        "ઉત્તમ વાંચન! તમારો આત્મવિશ્વાસ અને ઉચ્ચારણ ખરેખર પ્રશંસનીય છે.",
+        "ખૂબ સરસ પ્રયત્ન અને સચોટ વાંચન! આમ જ આગળ વધતા રહો."
+    ];
+
+    const remedialSentences = [
+        "કાના, માત્રા અને જોડાક્ષરોના ઉચ્ચારણ પર ધ્યાન આપી આંગળી ફેરવી ધીમે-ધીમે વાંચો.",
+        "અટકેલા શબ્દોને તોડી-તોડીને (અક્ષર/માત્રા મુજબ) બોલો અને ફરીથી વાંચવાનો મહાવરો કરો.",
+        "ડાબેથી જમણે ક્રમમાં દરેક શબ્દ પૂરો વાંચ્યા બાદ જ આગળના શબ્દ પર જાઓ."
+    ];
+
+    const motivationSentences = [
+        "ભૂલ થવી એ શીખવાની શરૂઆત છે — થોડા મહાવરાથી તમે ચોક્કસ સારું વાંચી શકશો!",
+        "તમે જરૂર શીખી શકશો! રોજ થોડો સમય વાંચન કરશો તો ઝડપ અને ચોકસાઈ બંને વધશે.",
+        "દરેક પ્રયત્ન તમને વધુ મજબૂત બનાવે છે — ફરી એકવાર ઉત્સાહથી વાંચન કરીએ!"
+    ];
+
+    function phoneticStemGu(word) {
+        let w = (word || "").toLowerCase().trim();
+        if (!w) return "";
+        w = w.replace(/ં/g, "ન")
+             .replace(/ઃ/g, "")
+             .replace(/ૈ/g, "ઐ")
+             .replace(/ૌ/g, "ઔ")
+             .replace(/ી/g, "િ")
+             .replace(/ઈ/g, "ઇ")
+             .replace(/ૂ/g, "ુ")
+             .replace(/ઊ/g, "ઉ")
+             .replace(/ણ/g, "ન")
+             .replace(/ળ/g, "લ")
+             .replace(/ષ/g, "શ")
+             .replace(/સ/g, "શ");
+        if (w.length > 3) {
+            w = w.replace(/(ો|ા|ે|ી|ુ|ૂ)$/g, "");
+        }
+        return w;
+    }
+
+    function normalizeGu(s) {
+        return (s || "")
+            .replace(/[🔵🔺🟦⭐🔴🟡🟢🐶🐱🐮🐦🦆🐸🍎🍌🥭🍊☀️🌙☁️🌧️👁️👂👃✋🚗🚌🚂🚲⬅️➡️🦁🐘🐎🐐🌸🍃🪨💧🟠🟣⚪⚫🐝🐓🦉🥄🥣🥛🪑.,\/#!$%\^&\*;:{}=\-_`~()।?'"->|]/g, " ")
+            .replace(/\s+/g, " ")
+            .trim()
+            .toLowerCase();
+    }
+
+    function levenshteinDistance(a, b) {
+        const m = a.length;
+        const n = b.length;
+        if (m === 0) return n;
+        if (n === 0) return m;
+        const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+        for (let i = 0; i <= m; i++) dp[i][0] = i;
+        for (let j = 0; j <= n; j++) dp[0][j] = j;
+        for (let i = 1; i <= m; i++) {
+            for (let j = 1; j <= n; j++) {
+                const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+                dp[i][j] = Math.min(
+                    dp[i - 1][j] + 1,
+                    dp[i][j - 1] + 1,
+                    dp[i - 1][j - 1] + cost
+                );
+            }
+        }
+        return dp[m][n];
+    }
+
+    function wordSimilarity(w1, w2) {
+        if (!w1 || !w2) return 0;
+        if (w1 === w2) return 1;
+
+        const s1 = phoneticStemGu(w1);
+        const s2 = phoneticStemGu(w2);
+        if (s1 && s2 && s1 === s2) return 0.95;
+
+        const maxLen = Math.max(w1.length, w2.length);
+        const dist = levenshteinDistance(w1, w2);
+        const rawSim = Math.max(0, (maxLen - dist) / maxLen);
+
+        const stemMax = Math.max(s1.length, s2.length);
+        const stemDist = levenshteinDistance(s1, s2);
+        const stemSim = stemMax > 0 ? Math.max(0, (stemMax - stemDist) / stemMax) : 0;
+
+        return Math.max(rawSim, stemSim * 0.96);
+    }
+
+    document.getElementById("visit-date").valueAsDate = new Date();
+
+    let currentGradeKey = "balvatika";
+    let filteredKadams = [];
+    let currentKadamIdx = 0;
+    let currentKramIdx = 0;
+    let currentSampleIdx = 0;
+
+    let readStartTime = null;
+    let timerInterval = null;
+    let lastDurationSec = 0;
+    let lastWpm = 0;
+    let lastSpoken = "";
+    let accumulatedTranscript = "";
+    let recognitionInstance = null;
+    let isRecognizing = false;
+    let lastAccuracyStatus = "AI મૂલ્યાંકન બાકી";
+    let lastPraise = "-";
+    let lastRemedial = "-";
+    let lastMotivation = "-";
+    let currentGPS = { label: "GPS લીધેલ નથી" };
+    let records = JSON.parse(localStorage.getItem("crc_pragati_eval_v11") || localStorage.getItem("crc_pragati_eval_v10") || "[]");
+    let micGrantedOnce = false;
+    let autoPermissionAttempted = false;
+
+    function updateMicBadge(text, granted = false) {
+        micGrantedOnce = granted;
+        const badge = document.getElementById("mic-perm-badge");
+        const box = document.getElementById("mic-perm-box");
+        badge.innerText = text;
+        badge.classList.toggle("mic-perm-granted", granted);
+        box.classList.toggle("mic-box-ready", granted);
+    }
+
+    async function checkMicPermissionState(showAlert = false) {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            updateMicBadge("આ બ્રાઉઝરમાં માઇક API ઉપલબ્ધ નથી", false);
+            if (showAlert) alert("આ બ્રાઉઝર માઇક્રોફોન API સપોર્ટ કરતું નથી. કૃપા કરીને Google Chrome વાપરો.");
+            return "unsupported";
+        }
+        if (navigator.permissions && navigator.permissions.query) {
+            try {
+                const status = await navigator.permissions.query({ name: "microphone" });
+                status.onchange = () => {
+                    if (status.state === "granted") {
+                        updateMicBadge("✅ માઇક પરમિશન ઓટોમેટિક ચાલુ / મંજૂર છે", true);
+                    } else if (status.state === "denied") {
+                        updateMicBadge("❌ માઇક પરમિશન બ્લોક થયેલ છે (Denied)", false);
+                    } else {
+                        updateMicBadge("⏳ માઇક પરમિશન શરૂ થઈ રહી છે...", false);
+                    }
+                };
+                if (status.state === "granted") {
+                    updateMicBadge("✅ માઇક પરમિશન ઓટોમેટિક ચાલુ / મંજૂર છે", true);
+                    if (showAlert) alert("માઇક્રોફોન પરમિશન ચાલુ અને મંજૂર (Granted) છે!");
+                    return "granted";
+                } else if (status.state === "denied") {
+                    updateMicBadge("❌ માઇક પરમિશન બ્લોક થયેલ છે (Denied)", false);
+                    if (showAlert) alert("માઇક્રોફોન પરમિશન બ્લોક થયેલ છે. એડ્રેસ બારના 🔒 આઇકન પર ક્લિક કરી Microphone → Allow કરો.");
+                    return "denied";
+                } else {
+                    updateMicBadge("⏳ માઇક પરમિશન આપવાની બાકી છે (Prompt)", false);
+                    if (showAlert) alert("માઇક પરમિશન આપવાની બાકી છે. પરમિશન માટે પ્રયત્ન કરવામાં આવે છે.");
+                    return "prompt";
+                }
+            } catch (e) {}
+        }
+        return micGrantedOnce ? "granted" : "unknown";
+    }
+
+    async function requestMicPermission(runQuickTest = false, silentAuto = false) {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            updateMicBadge("❌ માઇક સપોર્ટ નથી", false);
+            if (!silentAuto && runQuickTest) {
+                alert("આ બ્રાઉઝર માઇક્રોફોન સપોર્ટ કરતું નથી. કૃપા કરીને Google Chrome વાપરો.");
+            }
+            return false;
+        }
+        try {
+            if (!silentAuto) {
+                updateMicBadge("📡 માઇક પરમિશન ચાલુ કરવામાં આવી રહી છે...", false);
+            }
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const audioTracks = stream.getAudioTracks();
+            const label = (audioTracks[0] && audioTracks[0].label) ? ` (${audioTracks[0].label})` : "";
+            stream.getTracks().forEach(t => t.stop());
+            updateMicBadge(`✅ માઇક પરમિશન ચાલુ છે${label}`, true);
+            if (!silentAuto) {
+                document.getElementById("spoken-out").innerText = `✅ માઇક્રોફોન સક્રિય છે${label}! હવે '🎤 બાળક વાંચે' બટન દબાવી બોલો.`;
+            }
+            if (runQuickTest && !silentAuto) {
+                alert(`માઇક પરમિશન સફળતાપૂર્વક ચાલુ થઈ ગઈ છે${label}! હવે તમે બાળકનું વાંચન રેકોર્ડ કરી શકો છો.`);
+            }
+            return true;
+        } catch (err) {
+            if (silentAuto) {
+                updateMicBadge("⏳ માઇક પરમિશન માટે ક્લિક કરો / Allow આપો", false);
+            } else {
+                updateMicBadge("❌ માઇક પરમિશન મળી નથી / બ્લોક છે", false);
+                document.getElementById("spoken-out").innerText = `⚠️ માઇક પરમિશન સમસ્યા: ${err.message || "મંજૂરી મળી નથી"}`;
+                if (runQuickTest) {
+                    alert("માઇક પરમિશન મળી નથી: " + (err.message || "મંજૂરી આપો અથવા બ્રાઉઝર સેટિંગ્સમાં Microphone Allow કરો."));
+                }
+            }
+            return false;
+        }
+    }
+
+    async function autoEnableMicrophoneOnLoad() {
+        if (autoPermissionAttempted) return;
+        autoPermissionAttempted = true;
+        const state = await checkMicPermissionState(false);
+        if (state === "granted") {
+            updateMicBadge("✅ માઇક પરમિશન ઓટોમેટિક ચાલુ છે", true);
+            return;
+        }
+        if (state === "denied") {
+            return;
+        }
+        await requestMicPermission(false, true);
+    }
+
+    function countWordsGu(text) {
+        const cleaned = normalizeGu(text);
+        if (!cleaned) return 0;
+        return cleaned.split(/\s+/).filter(Boolean).length;
+    }
+
+    function startReadingTimer() {
+        stopReadingTimer();
+        readStartTime = Date.now();
+        timerInterval = setInterval(() => {
+            const elapsedSec = Math.max(0.1, (Date.now() - readStartTime) / 1000);
+            const targetText = document.getElementById("target-text").innerText;
+            const words = Math.max(1, countWordsGu(targetText));
+            const estWpm = Math.round((words / elapsedSec) * 60);
+            document.getElementById("live-timer").innerText = `⏱️ સમય: ${elapsedSec.toFixed(1)} સે. | ઝડપ: ~${estWpm} શબ્દ/મિનિટ`;
+        }, 200);
+    }
+
+    function stopReadingTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        if (readStartTime) {
+            lastDurationSec = Math.max(1, Number(((Date.now() - readStartTime) / 1000).toFixed(1)));
+        } else {
+            lastDurationSec = 4.0;
+        }
+    }
+
+    function evaluateReadingWithAI(targetRaw, spokenRaw, durationSec) {
+        const targetNorm = normalizeGu(targetRaw);
+        const spokenNorm = normalizeGu(spokenRaw);
+
+        const mainPartOnly = targetNorm.split("પ્રશ્ન")[0].trim();
+        const targetTokens = (mainPartOnly.length >= 6 ? mainPartOnly : targetNorm).split(" ").filter(Boolean);
+        const spokenTokens = spokenNorm.split(" ").filter(Boolean);
+
+        const fullTargetStem = phoneticStemGu(targetTokens.join(""));
+        const fullSpokenStem = phoneticStemGu(spokenTokens.join(""));
+        const fullPhraseSim = (fullTargetStem && fullSpokenStem)
+            ? Math.max(0, (Math.max(fullTargetStem.length, fullSpokenStem.length) - levenshteinDistance(fullTargetStem, fullSpokenStem)) / Math.max(fullTargetStem.length, fullSpokenStem.length))
+            : 0;
+
+        let matchedCount = 0;
+        let matchedScoreSum = 0;
+        const matchedWordsList = [];
+        const missedWordsList = [];
+
+        if (targetTokens.length > 0 && spokenTokens.length > 0) {
+            for (const tWord of targetTokens) {
+                let bestSim = 0;
+                for (const sWord of spokenTokens) {
+                    const sim = wordSimilarity(tWord, sWord);
+                    if (sim > bestSim) bestSim = sim;
+                }
+                if (bestSim < 0.55 && spokenNorm.includes(tWord)) {
+                    bestSim = 0.85;
+                }
+                if (bestSim >= 0.52) {
+                    matchedCount++;
+                    matchedScoreSum += Math.min(1, bestSim);
+                    matchedWordsList.push(tWord);
+                } else {
+                    missedWordsList.push(tWord);
+                }
+            }
+        }
+
+        const tokenRatio = targetTokens.length > 0 ? matchedScoreSum / targetTokens.length : 0;
+        const countRatio = targetTokens.length > 0 ? matchedCount / targetTokens.length : 0;
+        const effectiveScore = Math.max(tokenRatio, countRatio * 0.95, fullPhraseSim);
+
+        const wordCountForWpm = Math.max(spokenTokens.length, targetTokens.length, 1);
+        const wpm = Math.max(1, Math.round((wordCountForWpm / Math.max(1, durationSec)) * 60));
+        lastWpm = wpm;
+
+        const pct = Math.min(100, Math.round(effectiveScore * 100));
+        const randIdx = Math.floor(Math.random() * 3);
+        const banner = document.getElementById("ai-verdict-banner");
+        const detailBox = document.getElementById("word-match-detail");
+        banner.classList.remove("ai-verdict-correct", "ai-verdict-partial", "ai-verdict-wrong");
+
+        detailBox.style.display = "block";
+        detailBox.innerHTML =
+            `<strong>🔍 શબ્દવાર AI તપાસ:</strong> સાચા મેળ ખાતા શબ્દો (${matchedCount}/${targetTokens.length}): <b>${matchedWordsList.length ? matchedWordsList.join(", ") : "-"}</b>` +
+            (missedWordsList.length ? ` | ધ્યાન આપવા જેવા શબ્દો: <b>${missedWordsList.join(", ")}</b>` : " | બધા શબ્દો/અક્ષરો બરાબર!");
+
+        if (spokenTokens.length > 0 && pct >= 55) {
+            lastAccuracyStatus = `AI નિર્ણય: સાચું વાંચ્યું (${pct}% મેળ)`;
+            lastPraise = praiseSentences[randIdx];
+            lastRemedial = missedWordsList.length
+                ? `'${missedWordsList.join(", ")}' જેવા શબ્દોમાં માત્રા/ઉચ્ચાર પર થોડું ધ્યાન આપી વાંચન ઝડપ જાળવો.`
+                : "વાંચન યોગ્ય છે; વિરામચિહ્નો મુજબ સ્પષ્ટ અને ધીરજથી વાંચન ઝડપ જાળવો.";
+            lastMotivation = "ખૂબ સરસ પ્રગતિ! આ જ ઉત્સાહ સાથે આગળના કદમ અને ઉદાહરણો સિદ્ધ કરો.";
+            banner.classList.add("ai-verdict-correct");
+            banner.innerHTML = `🤖 AI નિર્ણય: <strong>સાચું વાંચ્યું</strong> (${pct}% ચોકસાઈ) • ઝડપ: <strong>${wpm} શબ્દ/મિનિટ</strong>`;
+        } else if (spokenTokens.length > 0 && pct >= 25) {
+            lastAccuracyStatus = `AI નિર્ણય: આંશિક સાચું / થોડો સુધારો જરૂરી (${pct}% મેળ)`;
+            lastPraise = "સારો પ્રયત્ન! તમે ઘણા શબ્દો/અક્ષરો સાચા વાંચ્યા છે, આત્મવિશ્વાસ સારો છે.";
+            lastRemedial = remedialSentences[randIdx];
+            lastMotivation = motivationSentences[randIdx];
+            banner.classList.add("ai-verdict-partial");
+            banner.innerHTML = `🤖 AI નિર્ણય: <strong>આંશિક સાચું (${pct}% મેળ)</strong> • થોડા મહાવરાથી પૂર્ણ સાચું થશે • ઝડપ: <strong>${wpm} શબ્દ/મિનિટ</strong>`;
+        } else {
+            lastAccuracyStatus = `AI નિર્ણય: ખોટું વાંચ્યું (${pct}% મેળ)`;
+            lastPraise = "વાંચનનો પ્રયત્ન કરવા બદલ ધન્યવાદ — શીખવાની પ્રક્રિયામાં પ્રયાસ મહત્વનો છે.";
+            lastRemedial = remedialSentences[randIdx];
+            lastMotivation = motivationSentences[randIdx];
+            banner.classList.add("ai-verdict-wrong");
+            banner.innerHTML = `🤖 AI નિર્ણય: <strong>ખોટું વાંચ્યું</strong> • ફરી ધ્યાનથી વાંચવાનો પ્રયત્ન કરો • ઝડપ: <strong>${wpm} શબ્દ/મિનિટ</strong>`;
+        }
+
+        document.getElementById("fb-accuracy").innerHTML = `<strong>🤖 AI નિર્ણય (સાચું / ખોટું):</strong> ${lastAccuracyStatus}`;
+        document.getElementById("fb-speed").innerHTML = `<strong>⚡ વાંચન ઝડપ:</strong> સમય: <b>${lastDurationSec} સેકન્ડ</b> | ઝડપ: <b>${lastWpm} શબ્દ/મિનિટ (WPM)</b>`;
+        document.getElementById("fb-praise").innerHTML = `<strong>🌟 પ્રશંસા:</strong> ${lastPraise}`;
+        document.getElementById("fb-remedial").innerHTML = `<strong>🛠️ સુધારાત્મક બાબત:</strong> ${lastRemedial}`;
+        document.getElementById("fb-motivate").innerHTML = `<strong>💪 પ્રેરણા:</strong> ${lastMotivation}`;
+        document.getElementById("live-timer").innerText = `⏱️ સમય: ${lastDurationSec} સે. | ઝડપ: ${lastWpm} શબ્દ/મિનિટ`;
+    }
+
+    function resetFeedbackPanel() {
+        if (recognitionInstance && isRecognizing) {
+            try { recognitionInstance.stop(); } catch (e) {}
+        }
+        isRecognizing = false;
+        accumulatedTranscript = "";
+        stopReadingTimer();
+        readStartTime = null;
+        lastSpoken = "";
+        lastDurationSec = 0;
+        lastWpm = 0;
+        lastAccuracyStatus = "AI મૂલ્યાંકન બાકી";
+        lastPraise = "-";
+        lastRemedial = "-";
+        lastMotivation = "-";
+
+        const banner = document.getElementById("ai-verdict-banner");
+        banner.classList.remove("ai-verdict-correct", "ai-verdict-partial", "ai-verdict-wrong");
+        banner.innerHTML = "🤖 AI સ્વયંચાલિત મૂલ્યાંકન: બાળક વાંચે ત્યારે AI ગુજરાતી ઉચ્ચાર, શબ્દ અને અક્ષરો તપાસીને આપમેળે <strong>સાચું</strong> કે <strong>ખોટું</strong> નક્કી કરશે.";
+
+        document.getElementById("spoken-out").innerText = "";
+        document.getElementById("word-match-detail").style.display = "none";
+        document.getElementById("word-match-detail").innerHTML = "";
+        document.getElementById("live-timer").innerText = "⏱️ સમય: 0.0 સે. | ઝડપ: 0 શબ્દ/મિનિટ";
+        document.getElementById("fb-accuracy").innerHTML = "<strong>🤖 AI નિર્ણય (સાચું / ખોટું):</strong> બાળક વાંચે ત્યારે AI આપમેળે નક્કી કરશે.";
+        document.getElementById("fb-speed").innerHTML = "<strong>⚡ વાંચન ઝડપ:</strong> વાંચન પૂર્ણ થતાં સમય (સેકન્ડ) અને શબ્દ/મિનિટ (WPM) આપમેળે નોંધાશે.";
+        document.getElementById("fb-praise").innerHTML = "<strong>🌟 પ્રશંસા:</strong> AI દ્વારા ઓટો પ્રશંસા વાક્ય અહીં આવશે.";
+        document.getElementById("fb-remedial").innerHTML = "<strong>🛠️ સુધારાત્મક બાબત:</strong> AI દ્વારા ઓટો સુધારાત્મક બાબત અહીં આવશે.";
+        document.getElementById("fb-motivate").innerHTML = "<strong>💪 પ્રેરણા:</strong> AI દ્વારા ઓટો પ્રેરણાદાયી વાક્ય અહીં આવશે.";
+        document.getElementById("mic-btn").innerText = "🎤 બાળક વાંચે (AI ઓટો ચેક)";
+    }
+
+    function updateGradeTabsUI() {
+        document.querySelectorAll(".grade-tab-btn").forEach(btn => {
+            btn.classList.toggle("active", btn.getAttribute("data-grade") === currentGradeKey);
+        });
+        document.getElementById("grade-select").value = currentGradeKey;
+    }
+
+    function selectGrade(gradeKey) {
+        currentGradeKey = gradeKey;
+        updateGradeTabsUI();
+        populateKadams();
+    }
+
+    function populateKadams() {
+        const gRank = gradeMeta[currentGradeKey].rank;
+        filteredKadams = allKadamsOrdered.filter(k => k.minGradeRank <= gRank);
+
+        const kadamSelect = document.getElementById("kadam-select");
+        kadamSelect.innerHTML = "";
+        filteredKadams.forEach((k, idx) => {
+            const opt = document.createElement("option");
+            opt.value = idx;
+            opt.innerText = `[${k.originLabel}] ${k.name}`;
+            kadamSelect.appendChild(opt);
+        });
+
+        currentKadamIdx = 0;
+        populateKrams();
+    }
+
+    function populateKrams() {
+        const kramSelect = document.getElementById("kram-select");
+        kramSelect.innerHTML = "";
+        const kadamObj = filteredKadams[currentKadamIdx];
+        kadamObj.krams.forEach((kr, idx) => {
+            const opt = document.createElement("option");
+            opt.value = idx;
+            opt.innerText = `ક્રમ ${kr.no} — ${kr.title} (${kr.samples.length} ઉદાહરણ)`;
+            kramSelect.appendChild(opt);
+        });
+        currentKramIdx = 0;
+        currentSampleIdx = 0;
+        updateStage();
+    }
+
+    function renderQuickChips(samples) {
+        const chipsContainer = document.getElementById("quick-chips");
+        chipsContainer.innerHTML = "";
+        samples.forEach((_, idx) => {
+            const chip = document.createElement("button");
+            chip.type = "button";
+            chip.className = "chip-btn" + (idx === currentSampleIdx ? " active-chip" : "");
+            chip.innerText = `ઉદાહરણ ${idx + 1}`;
+            chip.onclick = () => {
+                currentSampleIdx = idx;
+                updateStage(true);
+            };
+            chipsContainer.appendChild(chip);
+        });
+    }
+
+    function updateStage(resetEval = true) {
+        const gInfo = gradeMeta[currentGradeKey];
+        const kadamObj = filteredKadams[currentKadamIdx];
+        const kramObj = kadamObj.krams[currentKramIdx];
+        const totalSamples = kramObj.samples.length;
+
+        document.getElementById("kadam-banner").innerHTML =
+            `<span class="pill">${gInfo.label} પસંદ કરેલ</span> <strong>${kadamObj.name}</strong><br>` +
+            `<small>લક્ષ્ય: <b>${kadamObj.letters}</b> • પ્રત્યેક ક્રમમાં <b>${totalSamples}</b> ઉદાહરણો</small><br>` +
+            `<span class="sub-pill">ક્રમિક કદમ શ્રેણી: ${gInfo.desc} (કુલ ${filteredKadams.length} કદમ ઉપલબ્ધ)</span>`;
+
+        document.getElementById("active-kram-label").innerText = `[${kadamObj.originLabel}] ક્રમ ${kramObj.no} : ${kramObj.title}`;
+        document.getElementById("sample-counter").innerText = `ઉદાહરણ ${currentSampleIdx + 1} / ${totalSamples}`;
+        document.getElementById("target-text").innerText = kramObj.samples[currentSampleIdx];
+        renderQuickChips(kramObj.samples);
+
+        if (resetEval) {
+            resetFeedbackPanel();
+        }
+    }
+
+    function onKadamChange() {
+        currentKadamIdx = parseInt(document.getElementById("kadam-select").value, 10);
+        populateKrams();
+    }
+
+    function onKramChange() {
+        currentKramIdx = parseInt(document.getElementById("kram-select").value, 10);
+        currentSampleIdx = 0;
+        updateStage();
+    }
+
+    function nextSample() {
+        const samples = filteredKadams[currentKadamIdx].krams[currentKramIdx].samples;
+        currentSampleIdx = (currentSampleIdx + 1) % samples.length;
+        updateStage();
+    }
+
+    function randomSample() {
+        const samples = filteredKadams[currentKadamIdx].krams[currentKramIdx].samples;
+        if (samples.length <= 1) return;
+        let nextIdx = Math.floor(Math.random() * samples.length);
+        if (nextIdx === currentSampleIdx) {
+            nextIdx = (currentSampleIdx + 1) % samples.length;
+        }
+        currentSampleIdx = nextIdx;
+        updateStage();
+    }
+
+    function speakTarget() {
+        window.speechSynthesis.cancel();
+        const text = document.getElementById("target-text").innerText;
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "gu-IN";
+        utter.rate = 0.88;
+        window.speechSynthesis.speak(utter);
+    }
+
+    async function listenStudent() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert("કૃપા કરીને Google Chrome બ્રાઉઝર વાપરો જેથી AI માઈક દ્વારા બાળકનું વાંચન સાંભળીને ઓટોમેટિક સાચું કે ખોટું નક્કી કરી શકે.");
+            return;
+        }
+        if (isRecognizing && recognitionInstance) {
+            try { recognitionInstance.stop(); } catch (e) {}
+            return;
+        }
+
+        if (!micGrantedOnce) {
+            const hasMic = await requestMicPermission(false, false);
+            if (!hasMic) {
+                return;
+            }
+        }
+
+        const rec = new SpeechRecognition();
+        recognitionInstance = rec;
+        rec.lang = "gu-IN";
+        rec.interimResults = true;
+        rec.continuous = true;
+
+        accumulatedTranscript = "";
+        isRecognizing = true;
+
+        const btn = document.getElementById("mic-btn");
+        btn.innerText = "👂 AI સાંભળે છે... બાળક વાંચે";
+        document.getElementById("spoken-out").innerText = "માઈક ચાલુ છે — બાળક સ્પષ્ટ અવાજે વાંચે...";
+        startReadingTimer();
+        try {
+            rec.start();
+        } catch (err) {
+            stopReadingTimer();
+            isRecognizing = false;
+            btn.innerText = "🎤 બાળક વાંચે (AI ઓટો ચેક)";
+            document.getElementById("spoken-out").innerText = "સ્પીચ રેકગ્નિશન શરૂ થઈ શક્યું નહીં: " + (err.message || err);
+        }
+
+        rec.onresult = (e) => {
+            let finalText = "";
+            let interimText = "";
+            for (let i = 0; i < e.results.length; i++) {
+                const t = e.results[i][0].transcript;
+                if (e.results[i].isFinal) {
+                    finalText += (finalText ? " " : "") + t.trim();
+                } else {
+                    interimText += (interimText ? " " : "") + t.trim();
+                }
+            }
+            const combined = (finalText + " " + interimText).trim();
+            if (combined) {
+                accumulatedTranscript = combined;
+                lastSpoken = combined;
+                document.getElementById("spoken-out").innerText = `બાળક બોલ્યું: "${combined}"`;
+            }
+        };
+
+        rec.onerror = (e) => {
+            if (e.error === "no-speech" && accumulatedTranscript) {
+                stopListeningAndEvaluate();
+                return;
+            }
+            if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+                updateMicBadge("❌ માઇક પરમિશન બ્લોક છે — Allow કરો", false);
+            }
+            stopReadingTimer();
+            isRecognizing = false;
+            btn.innerText = "🎤 બાળક વાંચે (AI ઓટો ચેક)";
+            const spokenSoFar = accumulatedTranscript || "";
+            if (spokenSoFar) {
+                evaluateReadingWithAI(document.getElementById("target-text").innerText, spokenSoFar, lastDurationSec);
+            } else {
+                document.getElementById("spoken-out").innerText = `અવાજ સંભળાયો નહીં (${e.error}) — માઇક પરમિશન ચેક કરો અથવા ફરી પ્રયત્ન કરો.`;
+            }
+        };
+
+        rec.onend = () => {
+            if (isRecognizing) {
+                isRecognizing = false;
+                btn.innerText = "🎤 બાળક વાંચે (AI ઓટો ચેક)";
+                stopReadingTimer();
+                const targetText = document.getElementById("target-text").innerText;
+                evaluateReadingWithAI(targetText, accumulatedTranscript, lastDurationSec);
+            }
+        };
+    }
+
+    function stopListeningAndEvaluate() {
+        stopReadingTimer();
+        if (recognitionInstance && isRecognizing) {
+            isRecognizing = false;
+            try { recognitionInstance.stop(); } catch (e) {}
+        }
+        document.getElementById("mic-btn").innerText = "🎤 બાળક વાંચે (AI ઓટો ચેક)";
+        const targetText = document.getElementById("target-text").innerText;
+        evaluateReadingWithAI(targetText, accumulatedTranscript || lastSpoken, lastDurationSec);
+    }
+
+    function fetchLocation() {
+        const box = document.getElementById("location-box");
+        if (!navigator.geolocation) {
+            box.innerHTML = "⚠️ આ બ્રાઉઝર GPS સપોર્ટ કરતું નથી.";
+            return;
+        }
+        box.innerHTML = "📡 GPS સ્થળ મેળવાઈ રહ્યું છે...";
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const lat = pos.coords.latitude.toFixed(6);
+                const lon = pos.coords.longitude.toFixed(6);
+                const acc = Math.round(pos.coords.accuracy);
+                currentGPS = { label: `${lat}, ${lon} (±${acc}m)` };
+                box.innerHTML = `📍 <strong>સ્થળ નોંધાયું:</strong> Lat: <b>${lat}</b>, Lon: <b>${lon}</b> (±${acc}m) | <a href="https://www.google.com/maps?q=${lat},${lon}" target="_blank">Google Map પર જુઓ</a>`;
+            },
+            (err) => {
+                currentGPS = { label: "GPS પરમિશન નથી" };
+                box.innerHTML = `⚠️ GPS મળી શક્યું નથી (${err.message}). શાળા અને સ્થળની વિગત લખીને રેકોર્ડ સાચવી શકો છો.`;
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    }
+
+    function saveRecord() {
+        const school = document.getElementById("school-name").value.trim() || "શાળા (અનામી)";
+        const dise = document.getElementById("dise-code").value.trim() || "-";
+        const visitDate = document.getElementById("visit-date").value || new Date().toISOString().slice(0, 10);
+        const taluka = document.getElementById("taluka-name").value.trim() || "-";
+        const district = document.getElementById("district-name").value.trim() || "-";
+        const crcCo = document.getElementById("crc-co-name").value.trim() || "-";
+        const hmName = document.getElementById("hm-name").value.trim() || "-";
+        const classTeacher = document.getElementById("class-teacher").value.trim() || "-";
+        const student = document.getElementById("student-name").value.trim() || "બાળક";
+
+        const gInfo = gradeMeta[currentGradeKey];
+        const kadamObj = filteredKadams[currentKadamIdx];
+        const kramObj = kadamObj.krams[currentKramIdx];
+
+        const speedLabel = lastWpm > 0 ? `${lastWpm} શબ્દ/મિનિટ (${lastDurationSec} સે.)` : "નોંધ બાકી";
+
+        const row = {
+            date: visitDate,
+            grade: gInfo.label,
+            schoolDise: `${school} (${dise})`,
+            talukaDistrict: `${taluka} / ${district}`,
+            crcCo,
+            teachers: `મુ.શિ.: ${hmName} | વ.શિ.: ${classTeacher}`,
+            student,
+            kadamKram: `[${kadamObj.originLabel}] ${kadamObj.name.split("—")[0].trim()} | ક્રમ ${kramObj.no}`,
+            accuracy: lastSpoken ? `${lastAccuracyStatus} [${lastSpoken}]` : lastAccuracyStatus,
+            speed: speedLabel,
+            praise: lastPraise,
+            remedial: lastRemedial,
+            motivation: lastMotivation,
+            gps: currentGPS.label
+        };
+
+        records.unshift(row);
+        localStorage.setItem("crc_pragati_eval_v11", JSON.stringify(records));
+        renderTable();
+        alert(`${gInfo.label} (${kadamObj.originLabel} - ક્રમ ${kramObj.no}) નો પ્રગતિ રેકોર્ડ સાચવાઈ ગયો છે!`);
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById("log-tbody");
+        document.getElementById("rec-count").innerText = records.length;
+        tbody.innerHTML = "";
+        records.forEach(r => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${r.date}</td>
+                <td>${r.grade}</td>
+                <td>${r.schoolDise}</td>
+                <td>${r.talukaDistrict}</td>
+                <td>${r.crcCo}</td>
+                <td>${r.teachers}</td>
+                <td>${r.student}</td>
+                <td>${r.kadamKram}</td>
+                <td>${r.accuracy}</td>
+                <td>${r.speed}</td>
+                <td>${r.praise}</td>
+                <td>${r.remedial}</td>
+                <td>${r.motivation}</td>
+                <td>${r.gps}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function exportCSV() {
+        if (!records.length) {
+            alert("ડાઉનલોડ કરવા માટે કોઈ રેકોર્ડ નથી.");
+            return;
+        }
+        const headers = [
+            "તારીખ",
+            "પસંદ કરેલ ધોરણ",
+            "શાળા અને ડાયસ કોડ",
+            "તાલુકો અને જિલ્લો",
+            "CRC CO નું નામ",
+            "મુખ્ય શિક્ષક અને વર્ગ શિક્ષક",
+            "બાળકનું નામ",
+            "કદમ અને ક્રમ",
+            "AI નિર્ણય (સાચું કે ખોટું વાંચન)",
+            "વાંચન ઝડપ (શબ્દ/મિનિટ અને સમય)",
+            "પ્રશંસા",
+            "સુધારાત્મક બાબત",
+            "પ્રેરણા",
+            "GPS સ્થળ"
+        ];
+        const lines = records.map(r =>
+            [
+                r.date,
+                r.grade,
+                r.schoolDise,
+                r.talukaDistrict,
+                r.crcCo,
+                r.teachers,
+                r.student,
+                r.kadamKram,
+                r.accuracy,
+                r.speed,
+                r.praise,
+                r.remedial,
+                r.motivation,
+                r.gps
+            ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")
+        );
+        const csv = "\\uFEFF" + [headers.join(","), ...lines].join("\\n");
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "CRC_Pragati_Chart_AI_SmartGu_v11.csv";
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function clearRecords() {
+        if (confirm("શું તમે બધા સાચવેલા રેકોર્ડ્સ ભૂંસવા માંગો છો?")) {
+            records = [];
+            localStorage.removeItem("crc_pragati_eval_v11");
+            renderTable();
+        }
+    }
+
+    document.addEventListener("pointerdown", () => {
+        if (!micGrantedOnce) {
+            requestMicPermission(false, true);
+        }
+    }, { once: true });
+
+    updateGradeTabsUI();
+    populateKadams();
+    renderTable();
+    autoEnableMicrophoneOnLoad();
+</script>
+</body>
+</html>
+"""
+
+with open("crc-pragati-chart-v11.html", "w", encoding="utf-8") as f:
+    f.write(html_code_v11)
+
+print("Generated crc-pragati-chart-v11.html")
